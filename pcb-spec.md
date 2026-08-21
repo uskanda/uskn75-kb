@@ -78,17 +78,18 @@ QMK設定: `SERIAL_DRIVER = vendor`（RP2040標準のPIOドライバ）＋ `SERI
 
 ## 5. マトリクス割り付け
 
-### 左半体（6×8）
-| |COL0|COL1|COL2|COL3|COL4|COL5|COL6|COL7|
-|---|---|---|---|---|---|---|---|---|
-|**ROW0**|Esc|F1|F2|F3|F4|F5|F6|Home|
-|**ROW1**|HanZen|N1|N2|N3|N4|N5|N6|BSpcL|
-|**ROW2**|Tab|Q|W|E|R|T|DelL|—|
-|**ROW3**|Caps|A|S|D|F|G|EnterL|—|
-|**ROW4**|LShift|Z|X|C|V|B|EscL|—|
-|**ROW5**|LCtrl|LGui|LAlt|Muhenkan|SpaceL|Fn1|—|—|
+### 左半体（6×9）
+| |COL0|COL1|COL2|COL3|COL4|COL5|COL6|COL7|COL8|
+|---|---|---|---|---|---|---|---|---|---|
+|**ROW0**|Esc|F1|F2|F3|F4|F5|F6|Home|—|
+|**ROW1**|HanZen|N1|N2|N3|N4|N5|N6|BSpcL|—|
+|**ROW2**|Tab|Q|W|E|R|T|DelL|—|**ENC1 押込**|
+|**ROW3**|Caps|A|S|D|F|G|EnterL|—|**ENC2 押込**|
+|**ROW4**|LShift|Z|X|C|V|B|EscL|—|**ENC3 押込**|
+|**ROW5**|LCtrl|LGui|LAlt|Muhenkan|SpaceL|Fn1|—|—|—|
 
-COL8（左）: 物理キーなし。ロータリーエンコーダ押込 ENC1/2/3 が ROW2/ROW3/ROW4 に属する。
+COL8（左・GP22）: 物理キーを持たない疎な列。ロータリーエンコーダの押込スイッチ
+ENC1/2/3 のみが ROW2/ROW3/ROW4 に属する。
 
 ### 右半体（6×9）
 | |COL0|COL1|COL2|COL3|COL4|COL5|COL6|COL7|COL8|
