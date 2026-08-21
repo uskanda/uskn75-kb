@@ -281,7 +281,7 @@
   「キャップを買ってからPCBのキー幅を確定」の順序を守ってください。
 </div>
 
-<h2>9. PCB 設計仕様 <span>rev 1.0 / 別紙にデータ一式</span></h2>
+<h2>9. PCB 設計仕様 <span>rev 1.2 / 別紙にデータ一式</span></h2>
 <table>
   <tr><th>項目</th><th>左半体</th><th>右半体</th></tr>
   <tr><td>キー数</td><td class="mono">43 + エンコーダ3</td><td class="mono">52</td></tr>
@@ -304,7 +304,7 @@
   <tr><td>COL0〜COL8</td><td class="mono">GP8〜GP15, GP22（左も同構成。左COL8は押込専用）</td></tr>
   <tr><td>SPI0（SCK / MOSI / MISO / CS）</td><td class="mono">GP18 / GP19 / GP20 / GP21</td></tr>
   <tr><td>Cirque DR</td><td class="mono">GP26</td></tr>
-  <tr><td>分割シリアル</td><td class="mono">GP1（左右で揃える）</td></tr>
+  <tr><td>分割シリアル TX / RX</td><td class="mono">GP0 / GP1（全二重。左右の基板間で TX と RX をクロス）</td></tr>
 </table>
 <div class="warn">
   <b>この仕様書で規定していないもの</b><br>
