@@ -17,7 +17,7 @@
 | 配列図・設置イメージ・BOM・調達先 | `split-jis75-tb.html` |
 
 **矛盾を見つけたら勝手にどちらかへ寄せず、ユーザーに確認する。**
-数値が食い違う箇所は rev の取り違えである可能性が高い（HANDOFF は設計 rev 1.3 / PCB仕様 rev 1.2 / HTML は v1.3 だが一部 §9 見出しに rev 1.0 の記載が残っている）。
+数値が食い違う箇所は rev の取り違えである可能性が高い（HANDOFF は設計 rev 1.3 / PCB仕様 rev 1.2 / HTML は v1.3）。
 
 `HANDOFF.md` はチャットから Claude Code への引き継ぎ記録である。
 **進捗の更新は `README.md` の「現在のステータス」に書く**。HANDOFF は設計内容の変更時にのみ触る。
@@ -62,19 +62,28 @@
 
 ---
 
-## 5. 未生成の成果物
+## 5. 生成物（手で編集しない）
 
-`HANDOFF.md` §4 が挙げるファイルのうち、リポジトリに存在するのは `pcb-spec.md` と `split-jis75-tb.html` のみ。
-以下は**未生成**であり、生成する場合は `pcb-spec.md` §2〜§5 を唯一の入力とする:
+`kle-left.json` / `kle-right.json` / `matrix-left.csv` / `matrix-right.csv` /
+`encoders-left.csv` / `place-left.py` / `place-right.py` は
+**`tools/gen-layout.py` の出力**であり、直接編集してはいけない。
 
-`kle-left.json` / `kle-right.json` / `place-left.py` / `place-right.py` /
-`matrix-left.csv` / `matrix-right.csv` / `encoders-left.csv`
+```
+python3 tools/gen-layout.py
+```
 
-HANDOFF §4 に「`place-*.py` の座標は rev 1.2 の変更（左COL8新設・パッド0.19mm左シフト・右基板左端延長）を
-反映していない」という注記があるが、**そもそもファイルが存在しない**。過去チャットで生成されたが
-コミットされなかったものと思われる。再生成時は rev 1.2 の座標で作ること。
+このスクリプトは新しい数値を一切持たない。入力は次の2つだけ:
+
+- `split-jis75-tb.html` の `LEFT` / `RIGHT` 配列・`circlePad()`・`jisEnter()`・`encoders()` — 物理配置
+- `pcb-spec.md` の §1 キー領域 / §3 パッド開口 / §4 ピンアサイン / §5 マトリクス / §5.5 エンコーダ — 論理配置
+
+両者を突き合わせ、**1つでも食い違えば出力せずエラー終了する**。
+したがって配列や仕様を触ったら必ず実行すること（§6 の「両方直す」を機械的に担保するため）。
+突合しているのは、行ごとのキー数・キー総数(43/52)・パッド開口中心・エンコーダ中心・
+キー領域寸法・エンコーダ押込の行列位置。
 
 座標系の約束: **原点はキー領域の左上（u座標 0,0）／ Y は下方向が正（KiCad と同じ）／ 1u = 19.05mm**。
+KLE の左上ラベルは `row,col`（VIA互換・kbplacer が自動検出する形式）。
 
 ---
 
@@ -82,7 +91,8 @@ HANDOFF §4 に「`place-*.py` の座標は rev 1.2 の変更（左COL8新設・
 
 - `split-jis75-tb.html` は単一HTML（インラインCSS/JS、SVGを JS で生成）。
   配列を変えるときは末尾の `LEFT` / `RIGHT` 配列と `circlePad()` を編集する。
-  **配列図を変えたら `pcb-spec.md` §5 のマトリクス表と必ず同時に直す**
+  **配列図を変えたら `pcb-spec.md` §5 のマトリクス表と必ず同時に直し、
+  `python3 tools/gen-layout.py` を通してから閉じる**（通らなければどちらかが直っていない）
 - 数値を書き換えたら、同じ数値が他のファイルに何箇所あるか `grep` で確認してから閉じる
   （基板外形・パッド中心座標・GPIO割当は3ファイルに重複している）
 - rev を上げる変更をしたら、`HANDOFF.md` 冒頭の「最終更新 / rev」と各ファイルのタイトル行を更新する

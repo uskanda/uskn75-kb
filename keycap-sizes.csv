@@ -1,0 +1,8 @@
+size,left,right,total,inner_column,outside_inner
+1u,33,45,78,7,71
+1.25u,6,4,10,3,7
+1.5u,1,0,1,0,1
+1.75u,1,2,3,0,3
+2.25u,2,0,2,0,2
+JIS Enter(v2u),0,1,1,0,1
+合計,43,52,95,10,85
