@@ -36,8 +36,7 @@ HHKB からの移行を目的に、**PCB から自製する分割型 JIS 75% キ
 
 | ファイル | 役割 |
 |---|---|
-| `HANDOFF.md` | **引き継ぎの正本**。要件・確定仕様・設計判断の根拠・未確定事項・禁止事項 |
-| `pcb-spec.md` | **PCB設計仕様の正本**。基板外形座標・開口・ピンアサイン・マトリクス表 |
+| `pcb-spec.md` | **設計の正本**。確定要件・基板外形座標・開口・ピンアサイン・マトリクス表・未確定事項・判断根拠・禁止事項 |
 | `split-jis75-tb.html` | 設計案の全体像（配列図・設置イメージ・BOM・調達先）。ブラウザで開く |
 | `procurement.md` | **STEP 0 の店舗別チェックリスト**。キーキャップ必要数・買う前の禁止事項 |
 | `CLAUDE.md` | Claude Code 向けの作業規約 |
@@ -83,7 +82,7 @@ python3 tools/gen-layout.py
 - **ファーム**: QMK(Vial fork) / `MASTER_RIGHT` / `SERIAL_DRIVER = vendor` /
   `cirque_pinnacle_spi` / `POINTING_DEVICE_AUTO_MOUSE_ENABLE` / JIS は `INT1`〜`INT5`
 
-詳細は `pcb-spec.md`、判断の根拠は `HANDOFF.md` §7。
+詳細は `pcb-spec.md`、判断の根拠は同 §11。
 
 ---
 
@@ -101,7 +100,7 @@ python3 tools/gen-layout.py
 
 ## 触る前に読むこと
 
-`HANDOFF.md` §8（未確定事項）と §9（やってはいけないこと）。特に:
+`pcb-spec.md` §9（未確定事項 U1〜U8）と §12（やってはいけないこと）。特に:
 
 - **Cirque FPC 12ピンの信号順を推測で埋めない。** データシート必須。破壊に直結する
 - **キーキャップを買う前にキー幅を確定しない。** 順序は「キャップ → PCB」

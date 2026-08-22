@@ -33,12 +33,12 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HTML = os.path.join(ROOT, "split-jis75-tb.html")
 SPEC = os.path.join(ROOT, "pcb-spec.md")
 
-# pcb-spec §7 / HANDOFF §3: プレートマウント・3箇所のみ
+# pcb-spec §7: プレートマウント・3箇所のみ
 STABS = {("L", 4, 0): "2.25u",   # 左 LShift
          ("L", 5, 4): "2.25u",   # 左 Space
          ("R", 2, 8): "v2u"}     # 右 JIS Enter（縦2u）
 
-# HANDOFF §2.4 内側増設列。右は Z行・最下段をトラックパッドが占有するため ROW0..3 のみ
+# pcb-spec §5「内側増設列（R4）」。右は Z行・最下段をトラックパッドが占有するため ROW0..3 のみ
 INNER = {("L", 0, 7), ("L", 1, 7), ("L", 2, 6), ("L", 3, 6), ("L", 4, 6), ("L", 5, 5),
          ("R", 0, 0), ("R", 1, 0), ("R", 2, 0), ("R", 3, 0)}
 
