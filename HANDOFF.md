@@ -171,11 +171,14 @@ TRRS 4極 = Tip:TX / Ring1:RX / Ring2:**VBUS(5V)** / Sleeve:GND。
 | `place-left.py` / `place-right.py` | kbplacerが使えない場合の pcbnew 直接配置スクリプト |
 | `matrix-left.csv` / `matrix-right.csv` | 全95キーの座標・行列位置・ラベル |
 | `encoders-left.csv` | エンコーダ3個の座標とピン割当 |
+| `keycap-sizes.csv` | キーキャップのサイズ別数量（U5 の判断材料） |
 | `split-jis75-tb.html` | 設計案の全体像。配列図・設置イメージ・BOM・調達先（ブラウザで開く） |
+| `procurement.md` | STEP 0 の店舗別チェックリスト。§5 と HTML §7 を持ち歩ける形にしたもの |
+| `tools/gen-layout.py` | 上記の生成スクリプト。`split-jis75-tb.html` の配列と `pcb-spec.md` §1/§3/§4/§5/§5.5 を突合し、食い違えば出力せず停止する |
 
-**注意: `place-left.py` / `place-right.py` の座標は rev 1.2 の変更（左COL8新設・
-パッド0.19mm左シフト・右基板左端延長）を反映していない。**
-再生成が必要（生成ロジックは `pcb-spec.md` §2〜§5 が正）。
+**上記はすべて rev 1.2 の座標で生成済み**（2026-08-22）。左COL8新設・パッド0.19mm左シフト・
+右基板左端延長を反映している。**手で編集せず、`python3 tools/gen-layout.py` で再生成すること。**
+生成物には新しい数値は一切入っておらず、正は `split-jis75-tb.html` の配列と `pcb-spec.md` §2〜§5 のまま。
 
 ---
 
