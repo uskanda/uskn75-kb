@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.2)
+uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)
 
 kbplacer が使えない場合の pcbnew 直接配置スクリプト（pcb-spec.md §8 手順2）。
 KiCad の「ツール > スクリプトコンソール」で:
 
     exec(open("/path/to/place-left.py").read())
 
-座標は pcb-spec.md rev 1.2 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
+座標は pcb-spec.md rev 1.3 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
 ORIGIN_X_MM / ORIGIN_Y_MM で、その原点を基板シート上のどこへ置くかを決める。
 
 生成元: tools/gen-layout.py（split-jis75-tb.html + pcb-spec.md から生成。手で編集しない）
@@ -64,8 +64,9 @@ SWITCHES = [
     ("SW39", 35.719, 104.775, 0.0),
     ("SW40", 59.531, 104.775, 0.0),
     ("SW41", 83.344, 104.775, 0.0),
-    ("SW42", 116.681, 104.775, 0.0),
-    ("SW43", 150.019, 104.775, 0.0),
+    ("SW42", 107.156, 104.775, 0.0),
+    ("SW43", 140.494, 104.775, 0.0),
+    ("SW44", 109.538, 123.825, 0.0),
 ]
 
 # ダイオードは pcb-spec §6 に従い「スイッチ中心から下方 5.1mm・90度回転」。
@@ -112,8 +113,9 @@ DIODES = [
     ("D39", 35.719, 109.875, 90.0),
     ("D40", 59.531, 109.875, 90.0),
     ("D41", 83.344, 109.875, 90.0),
-    ("D42", 116.681, 109.875, 90.0),
-    ("D43", 150.019, 109.875, 90.0),
+    ("D42", 107.156, 109.875, 90.0),
+    ("D43", 140.494, 109.875, 90.0),
+    ("D44", 109.538, 128.925, 90.0),
 ]
 
 # (ref, x_mm, y_mm, rot_deg)  EC11本体（回転はGPIO直結・押込のみ COL8）
@@ -125,9 +127,9 @@ ENCODERS = [
 
 # エンコーダ押込スイッチ用のダイオード（DIODES と同じ扱い）
 ENCODER_DIODES = [
-    ("D44", -17.145, 24.150, 90.0),
-    ("D45", -17.145, 62.250, 90.0),
-    ("D46", -17.145, 100.350, 90.0),
+    ("D45", -17.145, 24.150, 90.0),
+    ("D46", -17.145, 62.250, 90.0),
+    ("D47", -17.145, 100.350, 90.0),
 ]
 
 
@@ -163,7 +165,7 @@ def main():
     missing += place(board, ENCODERS)
     missing += place(board, ENCODER_DIODES, FLIP_DIODES_TO_BACK)
     pcbnew.Refresh()
-    print("uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.2)")
+    print("uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)")
     print("  配置: SW %d / D %d / ENC %d / ENC用D %d" % (len(SWITCHES), len(DIODES), len(ENCODERS), len(ENCODER_DIODES)))
     if missing:
         print("  !! 見つからないフットプリント: " + ", ".join(missing))

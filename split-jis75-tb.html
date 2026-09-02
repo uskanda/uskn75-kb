@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>分割JIS 75% + Cirque 35mm 設計案 v1.4</title>
+<title>分割JIS 75% + Cirque 35mm 設計案 v1.5</title>
 <style>
   :root{
     --paper:#DDE3E2; --panel:#F3F5F4; --ink:#13232B; --ink2:#4B626C;
@@ -59,12 +59,12 @@
 
 <header>
   <div class="hd-main">
-    <p class="eyebrow">Design proposal / rev 1.4 — Cirque 実機確認</p>
+    <p class="eyebrow">Design proposal / rev 1.5 — 親指Enterと最下段の再配置</p>
     <h1>分割型 JIS 75% + Cirque 35mm 円形トラックパッド
       <small>row-staggered・有線・PCBから自製／ポインタは面一埋め込み</small></h1>
   </div>
   <div class="hd-meta mono">
-    <div><b>KEYS</b>95 + エンコーダ3</div>
+    <div><b>KEYS</b>98 + エンコーダ3</div>
     <div><b>MCU</b>右=RP2040-Plus(マスタ) / 左=Pico</div>
     <div><b>POINTING</b>TM035035-2024-002 / SPI</div>
     <div><b>CLICK</b>タップ + ホーム行（自動マウス層）／ Fn2 廃止</div>
@@ -77,11 +77,11 @@
   <div class="legend">
     <span><i style="background:var(--cap)"></i>通常キー</span>
     <span><i style="background:var(--mod)"></i>修飾・機能キー</span>
-    <span><i style="background:#F0C7AC;border-color:var(--add)"></i>増設キー（分割部の内側列）</span>
+    <span><i style="background:#F0C7AC;border-color:var(--add)"></i>増設キー（内側列・親指Enter・Fn1）</span>
     <span><i style="background:#A9D4CD;border-color:var(--pad)"></i>円形トラックパッド</span>
     <span><i style="background:#F0C7AC;border-color:var(--add)"></i>ロータリーエンコーダ</span>
   </div>
-  <figcaption>FIG.1 — 左端にロータリーエンコーダ3個を縦1列で増設。各2行ぶんを占有しノブ同士の間隔を確保</figcaption>
+  <figcaption>FIG.1 — 最下段の下に親指Enterを左右1個ずつ（1.5u）。左端のエンコーダ3個は各2行ぶんを占有。右内側列の無刻印2キーは Vial で後決め</figcaption>
 </figure>
 
 <h2>2. 設置イメージ <span>ハの字 15〜20° / 分離幅 150〜250mm（肩幅）</span></h2>
@@ -92,18 +92,18 @@
       <div class="half-r" id="mock-r"></div>
     </div>
   </div>
-  <p class="gapmark">分離幅は肩が開く程度（150〜250mm）を想定 ／ パッドはプレートと面一で、手を置いても当たらない</p>
-  <figcaption>FIG.2 — 完成イメージ。打鍵面より一段沈めるため、手を置いても当たらない</figcaption>
+  <p class="gapmark">分離幅は肩が開く程度（150〜250mm）を想定 ／ パッドはプレートと面一。rev 1.5 でホーム行の高さまで上げた</p>
+  <figcaption>FIG.2 — 完成イメージ。打鍵面より一段沈める。<b>rev 1.5 でパッドが H の左へ上がったため、ホームポジションの手が触れないかは実測で確認する（U6）</b></figcaption>
 </figure>
 
 <h2>3. パッドの配置と実装 <span>寸法</span></h2>
 <table>
   <tr><th>項目</th><th>値</th><th>理由・注意</th></tr>
   <tr><td>モジュール</td><td class="mono"><b>TM035035-2024-002</b>（モジュール外径 Ø35.0mm・実測／センサ有効径 Ø31.0mm）</td><td>末尾 <b>-002 がフラットオーバーレイ</b>。-003 は曲面、-001 は粘着式で、面一埋め込みには不適</td></tr>
-  <tr><td>位置</td><td class="mono">右内側列 / Z行〜最下段</td><td>Enter の真下。打鍵行の外側にあたるため、ノートPCと同じ「キーの下」の位置関係になる</td></tr>
-  <tr><td>J からの移動量</td><td class="mono">約 45mm（左下へ）</td><td>手ごと下ろすノートPCと違い、人差し指を斜め下へ落とすだけで届く</td></tr>
-  <tr><td>張り出し</td><td class="mono">最下段より手前へ約7mm</td><td>Enter との縦クリアランスを約5mm確保した結果。分割面側へも約9mm膨らむ</td></tr>
-  <tr><td>N・変換 とのクリアランス</td><td class="mono">3mm 以上</td><td><b>ここが唯一の弱点</b>。N を打つ人差し指がパッド縁に掛かりうるので、縁リブで物理的に仕切る</td></tr>
+  <tr><td>位置</td><td class="mono">右内側列 / <b>ホーム行〜Z行</b>（H の左）</td><td>rev 1.5 で「H の左の Enter」を親指へ移し、その跡地へ上げた。最下段が空くので、右最下段を 2u 左へ寄せられる</td></tr>
+  <tr><td>J からの移動量</td><td class="mono">約 52mm（ほぼ真左）</td><td>rev 1.4 までは斜め左下へ約54mm。<b>移動量はほぼ同じだが向きが真横になり、手首を送らずに人差し指だけで届く</b></td></tr>
+  <tr><td>張り出し</td><td class="mono">手前への張り出しは無し</td><td>ホーム行〜Z行に収まるため、rev 1.4 の「最下段より約7mm手前」は解消。分割面側へは、いちばん左のキーより約 6.3mm 膨らむ</td></tr>
+  <tr><td><b>H とのクリアランス</b></td><td class="mono">3.05mm（縁リブまで）</td><td><b>rev 1.5 の弱点はここに移った。</b>N とは 12.6mm に緩んだが、H は<b>ホーム行</b>なので誤反応のリスクは上がる。縁リブで仕切り、U6 で実測する</td></tr>
   <tr><td>オーバーレイ</td><td class="mono">モジュール付属のフラット面をそのまま使う</td><td><b>アクリルの追加被せは行わない</b>。-002 は既にフラットオーバーレイ付きで、二重化すると検出距離のマージンを食う。不満が出たら後から追加する</td></tr>
   <tr><td>沈み込み</td><td class="mono">プレート面 −0.5〜1.0mm + 縁リブ</td><td>掠めても反応しないよう凹ませる。静電容量式なので深すぎると感度が落ちる、実測で詰める</td></tr>
   
@@ -133,7 +133,7 @@
   <tr><td>ろ（\）</td><td class="mono">1u のまま</td><td>変更なし。JIS 刻印セットがそのまま使える</td></tr>
   <tr><td>矢印キー</td><td class="mono">本体から 0.5u 離した独立島へ</td><td>手探りで確実に掴める。↑ は ↓ の真上</td></tr>
   <tr><td>右 Space</td><td class="mono">1.75u を最下段の左端に新設</td><td>右親指でも Space が打てる。変換以降は 1.3u 右へ移動</td></tr>
-  <tr><td>全体幅</td><td class="mono">右半体 +1.8u（約34mm）</td><td>左右合計で約34mm 伸びる。分離幅が肩幅想定なので設置上の問題はない</td></tr>
+  <tr><td>全体幅</td><td class="mono">rev 1.5 で 右半体 −0.3u（約6mm）</td><td>矢印島を 0.8u 左へ寄せて右端を詰めたぶんと、内側列に1キー足して左へ 0.5u 伸びたぶんの差し引き。矢印島は右Shift 1.75u に阻まれ 0.8u までしか寄せられない</td></tr>
 </table>
 <div class="warn" style="border-color:var(--pad)">
   <b style="color:var(--pad)">キーキャップ互換性は維持された</b><br>
@@ -160,22 +160,24 @@
 <p class="note">いずれも Vial から自由に差し替えられます。Fn1 と組み合わせれば層ごとに別の機能を割り当てられるので、3個で実質6〜9系統は持てます。</p>
 <div class="warn" style="border-color:var(--pad)">
   <b style="color:var(--pad)">ピン数は問題なし・むしろ左半体の遊休GPIOが活きた</b><br>
-  左半体はもともと 16本しか使っておらず、Pico の 26本に対して10本が遊んでいました。エンコーダ6本と新設COL8の1本を足して <b>23本</b>。まだ3本残ります。<br>
-  <b>エンコーダを左に置いたのは正解です。</b>右半体は 22本使用済みで、ここに3個足すと 28本となり Pico 系のGPIOを超えます。左に寄せたことで、追加コストはエンコーダ代だけで済みました。
+  左半体はもともと 16本しか使っておらず、Pico の 26本に対して10本が遊んでいました。エンコーダ6本と押込専用COL8の1本、rev 1.5 で足した COL9 の1本を加えて <b>24本</b>。まだ2本残ります。<br>
+  <b>エンコーダを左に置いたのは正解です。</b>右半体は rev 1.5 で 23本使用済みで、ここに3個足すと 29本となり Pico 系のGPIOを超えます。左に寄せたことで、追加コストはエンコーダ代だけで済みました。
 </div>
 
-<h2>5. 内側列の割り当て <span>Enter は H の左に据え置き</span></h2>
+<h2>5. 内側列と親指行の割り当て <span>rev 1.5: Enter は H の左から親指へ</span></h2>
 <table>
   <tr><th>行</th><th>左半体 内側列</th><th>右半体 内側列</th><th>備考</th></tr>
-  <tr><td class="mono">F</td><td>Home</td><td>Insert</td><td>—</td></tr>
-  <tr><td class="mono">数字</td><td>BackSpace</td><td>BackSpace</td><td>小指の遠征を廃止</td></tr>
+  <tr><td class="mono">F</td><td>Home</td><td><b>無刻印</b> / Insert</td><td>rev 1.5 で Insert の左に1キー追加。割当は Vial で後決め</td></tr>
+  <tr><td class="mono">数字</td><td>BackSpace</td><td><b>無刻印</b> / BackSpace</td><td>小指の遠征を廃止。左の1キーは同上</td></tr>
   <tr><td class="mono">Q</td><td>Delete</td><td>Delete</td><td>—</td></tr>
-  <tr><td class="mono">ホーム</td><td><b>Enter</b></td><td><b>Enter</b></td><td>H の左。人差し指1移動で打てる</td></tr>
-  <tr><td class="mono">Z</td><td>Esc</td><td colspan="2" style="background:#DCE7E5"><b>円形トラックパッド</b>（2行ぶんを占有）</td></tr>
-  <tr><td class="mono">最下段</td><td>Fn1（記号/Nav/スクロール層）</td></tr>
+  <tr><td class="mono">ホーム</td><td><b>Enter</b></td><td colspan="2" style="background:#DCE7E5"><b>円形トラックパッド</b>（ホーム行〜Z行を占有）</td></tr>
+  <tr><td class="mono">Z</td><td>Esc</td><td colspan="2" style="background:#DCE7E5">同上</td></tr>
+  <tr><td class="mono">最下段</td><td>—（Fn1 は左Ctrl の左へ移動）</td><td>—</td><td>rev 1.5</td></tr>
+  <tr><td class="mono"><b>親指行</b></td><td><b>Enter 1.5u</b>（無変換の真下）</td><td><b>Enter 1.5u</b>（変換の真下）</td><td>rev 1.5 で新設。最下段の下に左右1個ずつだけ置く</td></tr>
 </table>
 <p class="note"><b>Fn2 は廃止しました。</b>マウス層はパッドに触れた時点で自動的に立ち上がるため常時の修飾キーが不要になり、残る役割（スクロール修飾・CPI切替）は左手の Fn1 に集約できます。右手がパッドを操作している間、左手は空いているので操作としても素直です。</p>
 <p class="note">Esc は左内側列と左上に残ります。従来の Enter / BS / Esc も右端にそのままあるので、ノートPCとの併用時の混乱は起きません。</p>
+<div class="warn"><b>rev 1.5 で最下段が JIS109 とずれます</b><br>左は Fn1 を左端へ入れたぶん Ctrl 以降が 1.25u 右へ、右は 2u 左へ動きます。狙いは<b>親指が Space ではなく 無変換／変換 に載ること</b>で、そのぶんノートPC（JIS109）との位置互換は最下段だけ崩れます。英数ブロック・Z行・右Shift 1.75u は無傷なので R2 と R9 は維持されます。</div>
 
 <h2>6. 電気設計 <span>ブロック図</span></h2>
 <figure>
@@ -184,9 +186,9 @@
 </figure>
 <table>
   <tr><th>項目</th><th>仕様</th><th>備考</th></tr>
-  <tr><td>マトリクス</td><td class="mono"><b>左右とも 6行×9列</b></td><td>1N4148W（SOD-123）。<b>COL2ROW</b>。QMKの MATRIX_COLS は左右共通のため列数を統一。左のCOL8はエンコーダ押込専用の疎な列</td></tr>
-  <tr><td>MCU（右・マスタ）</td><td class="mono">Waveshare RP2040-Plus</td><td>Pico互換ピンアウトで26GPIO、<b>USB Type-C</b>。15(matrix)+4(SPI)+1(DR)+2(serial)=<b>22本</b>で収まる</td></tr>
-  <tr><td>MCU（左・スレーブ）</td><td class="mono">Raspberry Pi Pico</td><td>15(matrix)+2(serial)+6(enc)=<b>23本</b>。USBは書き込み時のみ使うので micro-USB で支障なし</td></tr>
+  <tr><td>マトリクス</td><td class="mono"><b>左右とも 6行×10列</b></td><td>1N4148W（SOD-123）。<b>COL2ROW</b>。QMKの MATRIX_COLS は左右共通のため列数を統一。rev 1.5 で右の物理行0/1 が各10キーになったため COL9 を新設。左のCOL8はエンコーダ押込専用、左のCOL9は親指Enter用の疎な列</td></tr>
+  <tr><td>MCU（右・マスタ）</td><td class="mono">Waveshare RP2040-Plus</td><td>Pico互換ピンアウトで26GPIO、<b>USB Type-C</b>。16(matrix)+4(SPI)+1(DR)+2(serial)=<b>23本</b>で収まる</td></tr>
+  <tr><td>MCU（左・スレーブ）</td><td class="mono">Raspberry Pi Pico</td><td>16(matrix)+2(serial)+6(enc)=<b>24本</b>。USBは書き込み時のみ使うので micro-USB で支障なし</td></tr>
   <tr><td>ポインタ</td><td class="mono">Cirque Pinnacle / <b>SPI</b></td><td>モジュールは<b>既定でSPIモード</b>。I2Cにするにはチップ抵抗2個の除去が必要なので、素直にSPIで組む。DR（Data Ready）ピンは繋いだ方が応答が良い</td></tr>
   <tr><td>半体間接続</td><td class="mono">TRRS 4極</td><td>通電中の抜き差し厳禁</td></tr>
   <tr><td>ホスト接続</td><td class="mono">USB Type-C（<b>右半体</b>）</td><td>ESD保護・PTCはボード側に実装済みのため自前実装は不要</td></tr>
@@ -233,8 +235,8 @@
 <table>
   <tr><th colspan="4" style="background:#E4E9E8">E. 遊舎工房</th></tr>
   <tr><th>品目</th><th>型番・仕様</th><th>数</th><th>概算</th></tr>
-  <tr><td>キースイッチ</td><td class="mono">MX互換（静音タクタイル系）</td><td class="mono">95</td><td class="mono">6,000〜10,000</td></tr>
-  <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">95</td><td class="mono">3,000</td></tr>
+  <tr><td>キースイッチ</td><td class="mono">MX互換（静音タクタイル系）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
+  <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">98</td><td class="mono">3,000</td></tr>
   <tr><td><b>スタビライザー</b></td><td class="mono">プレートマウント：2.25u ×2（左Shift・左Space）、縦2u ×1（JIS Enter）</td><td class="mono">3</td><td class="mono">800</td></tr>
   <tr><td>TRRSジャック</td><td class="mono">PJ-320A</td><td class="mono">2</td><td class="mono">300</td></tr>
   <tr><td>TRRSケーブル</td><td class="mono">4極 3.5mm</td><td class="mono">1</td><td class="mono">600</td></tr>
@@ -247,7 +249,7 @@
 <table>
   <tr><th colspan="4" style="background:#E4E9E8">F. PCB製造</th></tr>
   <tr><th>品目</th><th>仕様</th><th>数</th><th>概算</th></tr>
-  <tr><td>左右基板</td><td class="mono">2層 1.6mm / JLCPCB・Elecrow<br>左 197.4×143.3mm ／ 右 266.6×158.0mm</td><td class="mono">各5<br>（最小ロット）</td><td class="mono">8,000〜20,000<br><b>要再見積</b></td></tr>
+  <tr><td>左右基板</td><td class="mono">2層 1.6mm / JLCPCB・Elecrow<br>左 197.4×162.35mm ／ 右 260.4×162.35mm</td><td class="mono">各5<br>（最小ロット）</td><td class="mono">8,000〜20,000<br><b>要再見積</b></td></tr>
   <tr><td colspan="4" style="background:#F7ECE4"><b>「5枚」は予備ではなく最小ロットです。</b>使うのは各1枚で、残り4枚は必然的に余ります。<br>
   ・100×100mm以内・1デザイン限定の格安枠（5枚2ドル）には<b>収まりません</b>。この寸法では通常価格になります<br>
   ・パッド用の丸穴が直径5mmを超えるため、<b>CNCルーティングの追加料金</b>（5枚で1枚あたり約$7.5、または1デザインあたり約$15.2）が発生する見込みです<br>
@@ -286,24 +288,24 @@
 <h2>9. PCB 設計仕様 <span>rev 1.2 / 別紙にデータ一式</span></h2>
 <table>
   <tr><th>項目</th><th>左半体</th><th>右半体</th></tr>
-  <tr><td>キー数</td><td class="mono">43 + エンコーダ3</td><td class="mono">52</td></tr>
-  <tr><td>マトリクス</td><td class="mono">6行 × 9列（COL8は押込専用）</td><td class="mono">6行 × 9列</td></tr>
-  <tr><td>必要GPIO</td><td class="mono">15 + シリアル2 + エンコーダ6 = <b>23</b></td><td class="mono">15 + SPI4 + DR1 + シリアル2 = <b>22</b></td></tr>
-  <tr><td>キー領域</td><td class="mono">191.5 × 114.3 mm</td><td class="mono">243.8 × 121.0 mm</td></tr>
-  <tr><td>基板外形</td><td class="mono">197.4 × 143.3 mm（矩形）</td><td class="mono"><b>266.6 × 158.0 mm</b>（段付き・パッド側へ左端延長）</td></tr>
+  <tr><td>キー数</td><td class="mono">44 + エンコーダ3</td><td class="mono">54</td></tr>
+  <tr><td>マトリクス</td><td class="mono">6行 × 10列（COL8は押込専用 / COL9は親指Enter）</td><td class="mono">6行 × 10列</td></tr>
+  <tr><td>必要GPIO</td><td class="mono">16 + シリアル2 + エンコーダ6 = <b>24</b></td><td class="mono">16 + SPI4 + DR1 + シリアル2 = <b>23</b></td></tr>
+  <tr><td>キー領域</td><td class="mono">191.5 × 133.35 mm</td><td class="mono">238.1 × 133.35 mm</td></tr>
+  <tr><td>基板外形</td><td class="mono"><b>197.4 × 162.35 mm</b>（段付き・親指Enterぶんが下へ張り出す）</td><td class="mono"><b>260.4 × 162.35 mm</b>（段付き・パッド側へ左端延長＋親指Enter）</td></tr>
   <tr><td>層構成</td><td colspan="2" class="mono">2層 / 1.6mm / HASL</td></tr>
 </table>
 <p class="note"><b>上端に Y=−26〜0 の帯を追加しました。</b>キーピッチ19.05mmに対しPicoの幅は21mmあり、キーの間にMCUを置けません。この帯にMCU・USB・TRRSをまとめます。</p>
 <table>
   <tr><th>トラックパッド開口</th><th>値</th></tr>
-  <tr><td>中心座標</td><td class="mono">X = 15.53 mm / Y = 101.44 mm（原点＝キー領域左上）</td></tr>
+  <tr><td>中心座標</td><td class="mono">X = 6.48 mm / Y = 76.20 mm（原点＝キー領域左上・rev 1.5 で移設）</td></tr>
   <tr><td>開口径</td><td class="mono">Ø42 mm（現物実測で最終確定）</td></tr>
   <tr><td>取付</td><td class="mono">裏面からM2スペーサーで吊り、天面をプレート面と面一に合わせる</td></tr>
 </table>
 <table>
   <tr><th>右半体 GPIO 割り当て（RP2040-Plus）</th><th>ピン</th></tr>
   <tr><td>ROW0〜ROW5</td><td class="mono">GP2, GP3, GP4, GP5, GP6, GP7</td></tr>
-  <tr><td>COL0〜COL8</td><td class="mono">GP8〜GP15, GP22（左も同構成。左COL8は押込専用）</td></tr>
+  <tr><td>COL0〜COL9</td><td class="mono">GP8〜GP15, GP22, GP16（左は COL9 のみ GP26。左COL8は押込専用）</td></tr>
   <tr><td>SPI0（SCK / MOSI / MISO / CS）</td><td class="mono">GP18 / GP19 / GP20 / GP21</td></tr>
   <tr><td>Cirque DR</td><td class="mono">GP26</td></tr>
   <tr><td>分割シリアル TX / RX</td><td class="mono">GP0 / GP1（全二重。左右の基板間で TX と RX をクロス）</td></tr>
@@ -318,7 +320,7 @@
 <ul>
   <li><b>STEP 0</b> — Mouser で <span class="mono">TM035035-2024-002</span> を電子部品とまとめて発注（送料無料ラインを超える構成にする）。同時にキーキャップ方針を確定。</li>
   <li><b>STEP 1</b> — パッド単体を Pico に繋いでマウスとして動かす。<b>加速カーブとタップ判定の詰めがこの案の山場</b>なので、基板を起こす前にここで納得しておく。</li>
-  <li><b>STEP 2</b> — 開口位置・オーバーレイ厚・縁リブのモックを A1 で出力。厚み 0.8 / 1.0 / 1.2mm と沈み 0.5 / 1.0mm を刷り、<b>N を打つ指が誤反応しないか</b>を実際に確かめる。</li>
+  <li><b>STEP 2</b> — 開口位置・オーバーレイ厚・縁リブのモックを A1 で出力。厚み 0.8 / 1.0 / 1.2mm と沈み 0.5 / 1.0mm を刷り、<b>H に指を置いただけで誤反応しないか</b>を実際に確かめる。</li>
   <li><b>STEP 3</b> — 右半体を試作。JISキーコードと自動マウス層の検証はここで完結する（左は既存HHKBを併用して評価可能）。</li>
   <li><b>STEP 4</b> — 左半体を起こして通し検証 → ケースを本番出力。左は Pico なので部品調達も安い。</li>
 </ul>
@@ -338,15 +340,17 @@ const LEFT=[
  [["Tab",0,1.5,'m'],["Q",1.5],["W",2.5],["E",3.5],["R",4.5],["T",5.5],["Del",6.5,1,'a']],
  [["Caps",0,1.75,'m'],["A",1.75],["S",2.75],["D",3.75],["F",4.75],["G",5.75],["Enter",6.75,1.25,'a']],
  [["Shift",0,2.25,'m'],["Z",2.25],["X",3.25],["C",4.25],["V",5.25],["B",6.25],["Esc",7.25,1,'a']],
- [["Ctrl",0,1.25,'m'],["Win",1.25,1.25,'m'],["Alt",2.5,1.25,'m'],["無変換",3.75,1.25,'m'],["Space",5,2.25,'m'],["Fn1",7.25,1.25,'a']]
+ [["Fn1",0,1.25,'a'],["Ctrl",1.25,1.25,'m'],["Win",2.5,1.25,'m'],["Alt",3.75,1.25,'m'],["無変換",5,1.25,'m'],["Space",6.25,2.25,'m']],
+ [["Enter",5,1.5,'a']]
 ];
 const RIGHT=[
- [["Ins",0.75,1,'a'],["F7",1.75],["F8",2.75],["F9",3.75],["F10",4.75],["F11",5.75],["F12",6.75],["Del",7.75,1,'m'],["PrSc",8.75,1,'m']],
- [["BS",0.75,1,'a'],["7",1.75],["8",2.75],["9",3.75],["0",4.75],["-",5.75],["^",6.75],["¥",7.75],["BS",8.75,1,'m']],
+ [["",-0.25,1,'a'],["Ins",0.75,1,'a'],["F7",1.75],["F8",2.75],["F9",3.75],["F10",4.75],["F11",5.75],["F12",6.75],["Del",7.75,1,'m'],["PrSc",8.75,1,'m']],
+ [["",-0.25,1,'a'],["BS",0.75,1,'a'],["7",1.75],["8",2.75],["9",3.75],["0",4.75],["-",5.75],["^",6.75],["¥",7.75],["BS",8.75,1,'m']],
  [["Del",0.25,1,'a'],["Y",1.25],["U",2.25],["I",3.25],["O",4.25],["P",5.25],["@",6.25],["[",7.25]],
- [["Enter",0.25,1.25,'a'],["H",1.5],["J",2.5],["K",3.5],["L",4.5],[";",5.5],[":",6.5],["]",7.5]],
- [["N",2],["M",3],[",",4],[".",5],["/",6],["\\",7],["Shift",8,1.75,'m'],["↑",11.05,1,'m']],
- [["Space",2.05,1.75,'m'],["変換",3.8,1.25,'m'],["かな",5.05,1.25,'m'],["Alt",6.3,1,'m'],["App",7.3,1,'m'],["Ctrl",8.3,1.25,'m'],["←",10.05,1,'m'],["↓",11.05,1,'m'],["→",12.05,1,'m']]
+ [["H",1.5],["J",2.5],["K",3.5],["L",4.5],[";",5.5],[":",6.5],["]",7.5]],
+ [["N",2],["M",3],[",",4],[".",5],["/",6],["\\",7],["Shift",8,1.75,'m'],["↑",10.25,1,'m']],
+ [["Space",0.05,1.75,'m'],["変換",1.8,1.25,'m'],["かな",3.05,1.25,'m'],["Alt",4.3,1,'m'],["App",5.3,1,'m'],["Ctrl",6.3,1.25,'m'],["←",9.25,1,'m'],["↓",10.25,1,'m'],["→",11.25,1,'m']],
+ [["Enter",1.8,1.5,'a']]
 ];
 const FILL={'':'#FBFCFB','m':'#CBD4D3','a':'#F0C7AC'};
 const STROKE={'':'#13232B','m':'#13232B','a':'#BE5518'};
@@ -370,9 +374,9 @@ function jisEnter(){
     <text x="${(x1+x2)/2}" y="${y1+30}" text-anchor="middle" font-family="ui-monospace,monospace"
       font-size="11" fill="#13232B">Enter</text>`;
 }
-/* 23mm circle trackpad, flush-mounted at the inner column (Q row - home row) */
+/* 35mm circle trackpad, flush-mounted at the inner column (home row - Z row) */
 function circlePad(){
-  const bx=-0.21*U, by=4.30*ROWH, bw=2.05*U, bh=2.05*ROWH;
+  const bx=-0.66*U, by=3.05*ROWH, bw=2.00*U, bh=1.90*ROWH;
   const cx=bx+bw/2, cy=by+bh/2, r=0.9186*U;   // Ø35.0mm module OD at 1u=19.05mm（センサ有効径は Ø31.0mm）
   let s='';
   s+=`<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="10"
@@ -381,12 +385,10 @@ function circlePad(){
   s+=`<circle cx="${cx}" cy="${cy}" r="${r*0.66}" fill="none" stroke="#7FBFB4" stroke-width="1" stroke-dasharray="3 3"/>`;
   s+=`<text x="${cx}" y="${cy+5}" text-anchor="middle" font-family="ui-monospace,monospace"
       font-size="13" fill="#0B5049">35mm</text>`;
-  s+=`<line x1="${bx}" y1="${6*ROWH}" x2="${bx+bw}" y2="${6*ROWH}" stroke="#5E9E95"
-      stroke-width="1" stroke-dasharray="4 3"/>`;
-  s+=`<text x="${cx}" y="${by+bh+18}" text-anchor="middle" font-family="ui-monospace,monospace"
-      font-size="9.5" fill="#5E9E95">最下段より約7mm 手前へ張り出す</text>`;
-  s+=`<text x="${cx}" y="${by-10}" text-anchor="middle" font-family="ui-monospace,monospace"
-      font-size="10" fill="#0E6B60">CIRQUE — 面一埋め込み</text>`;
+  s+=`<text x="${cx}" y="${cy-13}" text-anchor="middle" font-family="ui-monospace,monospace"
+      font-size="9.5" fill="#0E6B60">CIRQUE — 面一</text>`;
+  s+=`<text x="${cx}" y="${cy+18}" text-anchor="middle" font-family="ui-monospace,monospace"
+      font-size="9" fill="#5E9E95">H まで 3.05mm</text>`;
   return s;
 }
 function encoders(){
@@ -411,10 +413,10 @@ function encoders(){
 }
 function svgWrap(inner,w,h,pad){pad=pad||6;
   return `<svg viewBox="${-pad} ${-pad} ${w+pad*2} ${h+pad*2}" width="${w+pad*2}">${inner}</svg>`;}
-const leftSVG=svgWrap(`<g transform="translate(${1.55*U},0)">`+renderHalf(LEFT)+encoders()+`</g>`,10.05*U,6*ROWH,20);
-const rightSVG=svgWrap(renderHalf(RIGHT,jisEnter()+circlePad()),13.15*U,7.0*ROWH,26);
+const leftSVG=svgWrap(`<g transform="translate(${1.55*U},0)">`+renderHalf(LEFT)+encoders()+`</g>`,10.05*U,7*ROWH,20);
+const rightSVG=svgWrap(renderHalf(RIGHT,jisEnter()+circlePad()),12.25*U,7.0*ROWH,36);
 (function(){
-  const SPLIT=1.6*U, w=1.55*U+8.5*U+SPLIT+13.15*U, h=7.35*ROWH;
+  const SPLIT=1.6*U, w=1.55*U+8.5*U+SPLIT+12.25*U, h=7.9*ROWH;
   const SH=1.55*U;
   let s=`<g transform="translate(${SH},0)">${renderHalf(LEFT)}${encoders()}</g>`;
   s+=`<g transform="translate(${SH+8.5*U+SPLIT},0)">${renderHalf(RIGHT,jisEnter()+circlePad())}</g>`;
@@ -424,8 +426,8 @@ const rightSVG=svgWrap(renderHalf(RIGHT,jisEnter()+circlePad()),13.15*U,7.0*ROWH
       <line x1="${dx2}" y1="${dy-5}" x2="${dx2}" y2="${dy+5}" stroke="#4B626C"/>
       <text x="${(dx1+dx2)/2}" y="${dy-9}" text-anchor="middle" font-family="ui-monospace,monospace"
         font-size="10" fill="#4B626C">分割面 / 可変</text>`;
-  s+=`<text x="0" y="${6.55*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">LEFT — 43 keys + 3 encoders</text>`;
-  s+=`<text x="${SH+8.5*U+SPLIT+8.2*U}" y="${7.2*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">RIGHT — 52 keys + pad</text>`;
+  s+=`<text x="0" y="${7.6*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">LEFT — 44 keys + 3 encoders</text>`;
+  s+=`<text x="${SH+8.5*U+SPLIT+7.2*U}" y="${7.6*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">RIGHT — 54 keys + pad</text>`;
   document.getElementById('layout').innerHTML=svgWrap(s,w,h,26);
 })();
 document.getElementById('mock-l').innerHTML=leftSVG;
@@ -445,13 +447,13 @@ document.getElementById('mock-r').innerHTML=rightSVG;
   let s='';
   s+=box(0,60,110,54,'PC','USB Host');
   s+=arrow(110,87,175,87,'USB Type-C');
-  s+=box(175,40,190,94,'右半体 PCB（マスタ）','RP2040-Plus / 6×9','#0E6B60');
+  s+=box(175,40,190,94,'右半体 PCB（マスタ）','RP2040-Plus / 6×10','#0E6B60');
   s+=arrow(365,87,435,87,'SPI + DR / FFC');
   s+=box(435,40,170,94,'Cirque 35mm','TM035035-2024-002','#0E6B60');
   s+=`<line x1="270" y1="134" x2="270" y2="176" stroke="#4B626C" stroke-width="1.4"/>
       <polygon points="270,183 266,176 274,176" fill="#4B626C"/>
       <text x="282" y="162" font-family="ui-monospace,monospace" font-size="9.5" fill="#4B626C">TRRS serial</text>`;
-  s+=box(175,183,190,80,'左半体 PCB（スレーブ）','Raspberry Pi Pico / 6×9');
+  s+=box(175,183,190,80,'左半体 PCB（スレーブ）','Raspberry Pi Pico / 6×10');
   s+=`<text x="0" y="292" font-family="ui-monospace,monospace" font-size="10" fill="#4B626C">
       ※ USB を右へ移したことで、ポインタがマスタ直結になり split transaction が不要になった</text>`;
   s+=`<text x="0" y="306" font-family="ui-monospace,monospace" font-size="10" fill="#4B626C">

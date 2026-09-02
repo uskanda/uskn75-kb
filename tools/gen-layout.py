@@ -6,7 +6,8 @@ uskn75-kb レイアウト成果物ジェネレータ
 入力（正本）は以下の2つだけで、本スクリプトは新しい数値を一切持たない:
 
   - split-jis75-tb.html  の LEFT / RIGHT 配列と circlePad() / encoders()  … 物理配置(u座標)
-  - pcb-spec.md          の §4 ピンアサイン / §5 マトリクス表 / §5.5 エンコーダ … 論理配置
+  - pcb-spec.md          の §4 ピンアサイン / §5 マトリクス表 / §5.5 エンコーダ
+                          / §5.6 物理行と論理行がずれるキー … 論理配置
 
 両者を突き合わせ、食い違いがあれば出力せずに落ちる。
 （CLAUDE.md §6「配列図を変えたら pcb-spec §5 のマトリクス表と必ず同時に直す」の機械的な担保）
@@ -17,6 +18,9 @@ uskn75-kb レイアウト成果物ジェネレータ
   encoders-left.csv                   … エンコーダ3個の座標とピン割当
 
 座標系: 原点はキー領域の左上（u座標 0,0）／ Y は下方向が正（KiCadと同じ）／ 1u = 19.05mm
+
+物理行は7段（最下段の下に親指Enter）だが論理 ROW は6段。ずれるキーの対応は
+pcb-spec.md §5.6 の表が正本で、本スクリプトはそれを読むだけ。
 """
 
 import csv
@@ -35,12 +39,15 @@ SPEC = os.path.join(ROOT, "pcb-spec.md")
 
 # pcb-spec §7: プレートマウント・3箇所のみ
 STABS = {("L", 4, 0): "2.25u",   # 左 LShift
-         ("L", 5, 4): "2.25u",   # 左 Space
-         ("R", 2, 8): "v2u"}     # 右 JIS Enter（縦2u）
+         ("L", 5, 5): "2.25u",   # 左 Space（rev 1.5 で COL4 -> COL5）
+         ("R", 2, 9): "v2u"}     # 右 JIS Enter（縦2u。rev 1.5 で COL8 -> COL9）
+# 親指Enter（左右各1.5u）は対象外。2u未満はスタビ無しが標準（pcb-spec §7）
 
-# pcb-spec §5「内側増設列（R4）」。右は Z行・最下段をトラックパッドが占有するため ROW0..3 のみ
-INNER = {("L", 0, 7), ("L", 1, 7), ("L", 2, 6), ("L", 3, 6), ("L", 4, 6), ("L", 5, 5),
-         ("R", 0, 0), ("R", 1, 0), ("R", 2, 0), ("R", 3, 0)}
+# pcb-spec §5「内側増設列（R4）」。rev 1.5:
+#   左は ROW5 の Fn1 が最下段左端へ移動して抜けた
+#   右は ROW3 の EnterI が廃止され、代わりに ROW0/ROW1 へ無刻印2キー（COL0）が増えた
+INNER = {("L", 0, 7), ("L", 1, 7), ("L", 2, 6), ("L", 3, 6), ("L", 4, 6),
+         ("R", 0, 0), ("R", 0, 1), ("R", 1, 0), ("R", 1, 1), ("R", 2, 1)}
 
 
 def die(msg):
@@ -142,16 +149,16 @@ def section(title):
 
 
 def read_matrix(half_title):
-    """§5 のマトリクス表 -> [[cell or None, ...9], ...6]  ('—' と ENC押込 は None)"""
+    """§5 のマトリクス表 -> [[cell or None, ...10], ...6]  ('—' と ENC押込 は None)"""
     body = section(half_title)
     rows = []
     for line in body.splitlines():
         m = re.match(r"\|\*\*ROW(\d)\*\*\|(.*)\|\s*$", line)
         if not m:
             continue
-        cells = [c.strip() for c in m.group(2).split("|")]
-        if len(cells) != 9:
-            die("%s ROW%s の列数が %d（9でない）" % (half_title, m.group(1), len(cells)))
+        cells = [c.strip().strip("*").strip() for c in m.group(2).split("|")]   # 強調記号を落とす
+        if len(cells) != 10:
+            die("%s ROW%s の列数が %d（10でない）" % (half_title, m.group(1), len(cells)))
         rows.append([None if (c == "—" or "ENC" in c) else c for c in cells])
     if len(rows) != 6:
         die("%s の行数が %d（6でない）" % (half_title, len(rows)))
@@ -159,7 +166,7 @@ def read_matrix(half_title):
 
 
 def read_pins(half_title):
-    """§4 のピンアサイン表 -> (rows_gpio[6], cols_gpio[9])"""
+    """§4 のピンアサイン表 -> (rows_gpio[6], cols_gpio[10])"""
     body = section(half_title)
     def grab(key):
         m = re.search(r"\|\s*%s\s*\|\s*`([^`]+)`\s*\|" % key, body)
@@ -167,10 +174,29 @@ def read_pins(half_title):
             die("§4 %s から %s を読めない" % (half_title, key))
         return [g.strip() for g in m.group(1).split(",")]
     rows = grab(r"ROW0\.\.ROW5")
-    cols = grab(r"COL0\.\.COL8")
-    if len(rows) != 6 or len(cols) != 9:
-        die("§4 %s のGPIO本数が 6/9 でない (%d/%d)" % (half_title, len(rows), len(cols)))
+    cols = grab(r"COL0\.\.COL9")
+    if len(rows) != 6 or len(cols) != 10:
+        die("§4 %s のGPIO本数が 6/10 でない (%d/%d)" % (half_title, len(rows), len(cols)))
     return rows, cols
+
+
+def read_offrow():
+    """§5.6 -> {(side, phys_row, idx0): (logical_row, logical_col)}
+
+    物理行6（親指行）のように、物理行と論理 ROW が一致しないキーの対応表。
+    「行内の位置」は物理行を X 昇順に並べたときの何番目か（表は1始まり、戻り値は0始まり）。
+    """
+    body = section("### 5.6 物理行と論理行がずれるキー")
+    out = {}
+    for line in body.splitlines():
+        m = re.match(r"\|\s*(\S+)\s*\|\s*(左|右)\s*\|\s*(\d+)\s*\|\s*(\d+)\s*\|"
+                     r"\s*ROW(\d)\s*×\s*COL(\d)\s*\|", line)
+        if m:
+            side = "L" if m.group(2) == "左" else "R"
+            out[(side, int(m.group(3)), int(m.group(4)) - 1)] = (int(m.group(5)), int(m.group(6)))
+    if not out:
+        die("§5.6 から物理行と論理行の対応を読めない")
+    return out
 
 
 def read_encoder_spec():
@@ -193,7 +219,7 @@ def read_encoder_spec():
 
 def read_pad_spec():
     body = section("## 3. トラックパッド開口")
-    m = re.search(r"X\s*=\s*\*\*([\d.]+)\*\*\s*mm,\s*Y\s*=\s*([\d.]+)\s*mm", body)
+    m = re.search(r"X\s*=\s*\*{0,2}([\d.]+)\*{0,2}\s*mm,\s*Y\s*=\s*\*{0,2}([\d.]+)\*{0,2}\s*mm", body)
     if not m:
         die("§3 からパッド中心座標を読めない")
     return float(m.group(1)), float(m.group(2))
@@ -214,23 +240,49 @@ def near(a, b, tol=0.02):
     return abs(a - b) <= tol
 
 
-def build(side, html_rows, matrix, extra_keys):
-    """物理(HTML) と 論理(pcb-spec §5) を左から順に対応付ける"""
+def build(side, html_rows, matrix, extra_keys, offrow):
+    """物理(HTML) と 論理(pcb-spec §5) を左から順に対応付ける
+
+    物理行 ri < len(matrix) は ROW ri へそのまま対応。それ以外（親指行）は §5.6 の表に従う。
+    §5.6 が押さえたセルは、元の ROW 側の対応付けからは除外する。
+    """
+    claimed = {}                                  # (lrow, lcol) -> (prow, idx)
+    for (sd, pr, idx), (lr, lc) in offrow.items():
+        if sd == side:
+            claimed[(lr, lc)] = (pr, idx)
+    nlog = len(matrix)
+    used = set()
     keys = []
     n = 0
     for ri, row in enumerate(html_rows):
         phys = sorted(row, key=lambda k: k[1])
         for lbl, x, w in extra_keys.get(ri, []):
-            phys.append((lbl, x, w))          # 右ROW2の JIS Enter を末尾(COL8)へ
-        logical = [(ci, c) for ci, c in enumerate(matrix[ri]) if c is not None]
-        if len(phys) != len(logical):
-            die("%s ROW%d: 配列図 %d キー vs マトリクス表 %d キー"
-                % (side, ri, len(phys), len(logical)))
-        for (lbl, x, w), (ci, name) in zip(phys, logical):
+            phys.append((lbl, x, w))          # 右ROW2の JIS Enter を末尾(COL9)へ
+        slots = []
+        if ri < nlog:
+            for ci, c in enumerate(matrix[ri]):
+                if c is not None and (ri, ci) not in claimed:
+                    slots.append((ri, ci, c))
+            if len(phys) != len(slots):
+                die("%s 物理行%d: 配列図 %d キー vs マトリクス表の空きセル %d 個"
+                    % (side, ri, len(phys), len(slots)))
+        else:
+            for idx in range(len(phys)):
+                if (side, ri, idx) not in offrow:
+                    die("%s 物理行%d の %d 番目のキーが §5.6 の表に無い" % (side, ri, idx + 1))
+                lr, lc = offrow[(side, ri, idx)]
+                if matrix[lr][lc] is None:
+                    die("§5.6 が指す ROW%d×COL%d が §5 の表で空欄" % (lr, lc))
+                slots.append((lr, lc, matrix[lr][lc]))
+                used.add((side, ri, idx))
+        for (lbl, x, w), (lr, lc, name) in zip(phys, slots):
             n += 1
             keys.append({"ref": "SW%d" % n, "diode": "D%d" % n, "idx": n,
-                         "row": ri, "col": ci, "name": name, "disp": lbl,
+                         "row": lr, "col": lc, "prow": ri, "name": name, "disp": lbl,
                          "x": x, "w": w, "h": 1.0})
+    unused = {k for k in offrow if k[0] == side} - used
+    if unused:
+        die("%s: §5.6 の行に対応する物理キーが無い: %s" % (side, sorted(unused)))
     return keys
 
 
@@ -241,7 +293,7 @@ def kle(keys, meta_notes, jis_enter=None):
     doc = [{"name": meta_notes["name"], "notes": meta_notes["notes"]}]
     by_row = {}
     for k in keys:
-        by_row.setdefault(k["row"], []).append(k)
+        by_row.setdefault(k["prow"], []).append(k)      # 見た目の行＝物理行
     for ri in sorted(by_row):
         line, cx = [], 0.0
         for k in sorted(by_row[ri], key=lambda k: k["x"]):
@@ -274,7 +326,7 @@ def write_kle(path, doc):
 
 # --------------------------------------------------------------- 出力: CSV
 
-CSV_COLS = ["ref", "row", "col", "row_gpio", "col_gpio", "name", "label_html",
+CSV_COLS = ["ref", "row", "col", "phys_row", "row_gpio", "col_gpio", "name", "label_html",
             "x_mm", "y_mm", "w_u", "h_u", "rot_deg",
             "diode_ref", "diode_x_mm", "diode_y_mm", "diode_rot_deg", "stabilizer"]
 
@@ -316,7 +368,7 @@ def write_matrix_csv(path, side, keys, rows_gpio, cols_gpio):
         for k in keys:
             x = round(k["cx"] * U, 3)
             y = round(k["cy"] * U, 3)
-            w.writerow([k["ref"], k["row"], k["col"],
+            w.writerow([k["ref"], k["row"], k["col"], k["prow"],
                         rows_gpio[k["row"]], cols_gpio[k["col"]],
                         k["name"], k["disp"], x, y, k["w"], k["h"], 0,
                         k["diode"], x, round(y + DIODE_DY, 3), DIODE_ROT,
@@ -335,7 +387,7 @@ KiCad の「ツール > スクリプトコンソール」で:
 
     exec(open("/path/to/{fname}").read())
 
-座標は pcb-spec.md rev 1.2 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
+座標は pcb-spec.md rev 1.3 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
 ORIGIN_X_MM / ORIGIN_Y_MM で、その原点を基板シート上のどこへ置くかを決める。
 
 生成元: tools/gen-layout.py（split-jis75-tb.html + pcb-spec.md から生成。手で編集しない）
@@ -414,6 +466,7 @@ def main():
     html = read_html_arrays()
     enc_geom = read_encoder_geometry()
     enc_spec = read_encoder_spec()
+    offrow = read_offrow()
     je = read_jis_enter()
 
     # --- 右半体の JIS Enter を物理キーとして注入（HTML では jisEnter() で別描画）
@@ -422,25 +475,25 @@ def main():
     enter_cy = (je["y_top"] + je["y_bot"]) / 2.0
     extra_right = {2: [("Enter", je["x_bot"], je["x_right"] - je["x_bot"])]}
 
-    left = build("L", html["LEFT"], read_matrix("### 左半体（6×9）"), {})
-    right = build("R", html["RIGHT"], read_matrix("### 右半体（6×9）"), extra_right)
+    left = build("L", html["LEFT"], read_matrix("### 左半体（6×10）"), {}, offrow)
+    right = build("R", html["RIGHT"], read_matrix("### 右半体（6×10）"), extra_right, offrow)
 
     # --- 中心座標を確定
     enter_ref = None
     for k in left:
-        k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["row"] + 0.5
+        k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["prow"] + 0.5     # Y は物理行
     for k in right:
-        if k["name"] == "Enter" and k["row"] == 2 and k["col"] == 8:
+        if k["name"] == "Enter" and k["row"] == 2 and k["col"] == 9:
             k["cx"], k["cy"], k["h"] = enter_cx, enter_cy, 2.0
             enter_ref = k["ref"]
         else:
-            k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["row"] + 0.5
+            k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["prow"] + 0.5
 
     # --- 突合1: キー数
-    if len(left) != 43:
-        die("左半体のキー数が %d（43でない）" % len(left))
-    if len(right) != 52:
-        die("右半体のキー数が %d（52でない）" % len(right))
+    if len(left) != 44:
+        die("左半体のキー数が %d（44でない）" % len(left))
+    if len(right) != 54:
+        die("右半体のキー数が %d（54でない）" % len(right))
 
     # --- 突合2: パッド開口中心（HTML circlePad vs pcb-spec §3）
     pcx, pcy = read_pad_geometry()
@@ -461,15 +514,17 @@ def main():
     l_x1 = max(k["x"] + k["w"] for k in left)
     r_x0 = min(k["x"] for k in right)
     r_x1 = max(k["x"] + k["w"] for k in right)
+    l_rows = max(k["prow"] for k in left) + 1
+    r_rows = max(k["prow"] for k in right) + 1
     for got, want, what in (((l_x1 - l_x0) * U, lw, "左キー領域 幅"),
-                            (6 * U, lh, "左キー領域 高さ"),
+                            (l_rows * U, lh, "左キー領域 高さ"),
                             ((r_x1 - r_x0) * U, rw, "右キー領域 幅"),
-                            ((pcy + 1.025) * U, rh, "右キー領域 高さ")):
+                            (r_rows * U, rh, "右キー領域 高さ")):
         if not near(got, want, 0.06):
             die("%s が不一致: 算出 %.2fmm vs §1 %.2fmm" % (what, got, want))
 
     # --- 突合5: マトリクスに現れる ENC 押込の行列位置が §5.5 と一致するか
-    body = section("### 左半体（6×9）")
+    body = section("### 左半体（6×10）")
     for e in enc_spec:
         pat = r"\|\*\*ROW%d\*\*\|(?:[^|]*\|){%d}\*\*ENC%d 押込\*\*\|" % (e["row"], e["col"], e["n"])
         if not re.search(pat, body):
@@ -479,7 +534,7 @@ def main():
     rr_gpio, rc_gpio = read_pins("### 右半体（RP2040-Plus / マスタ）")
 
     notes = ("生成物。手で編集しない。生成元は tools/gen-layout.py "
-             "（入力: split-jis75-tb.html の配列 + pcb-spec.md rev 1.2 §4/§5/§5.5）。"
+             "（入力: split-jis75-tb.html の配列 + pcb-spec.md rev 1.3 §4/§5/§5.5/§5.6）。"
              "左上ラベルは row,col（VIA互換 / kbplacer が自動検出）。"
              "1u=19.05mm・原点はキー領域左上・Y下向き正。"
              "ロータリーエンコーダは含まない（encoders-left.csv 参照）。")
@@ -487,9 +542,9 @@ def main():
     out = lambda n: os.path.join(ROOT, n)
 
     write_kle(out("kle-left.json"),
-              kle(left, {"name": "uskn75-kb left (rev 1.2)", "notes": notes}))
+              kle(left, {"name": "uskn75-kb left (rev 1.3)", "notes": notes}))
     write_kle(out("kle-right.json"),
-              kle(right, {"name": "uskn75-kb right (rev 1.2)", "notes": notes},
+              kle(right, {"name": "uskn75-kb right (rev 1.3)", "notes": notes},
                   jis_enter={"ref": enter_ref}))
 
     write_matrix_csv(out("matrix-left.csv"), "L", left, lr_gpio, lc_gpio)
@@ -537,7 +592,7 @@ def main():
 
     with open(out("place-left.py"), "w", encoding="utf-8") as f:
         f.write(PLACE_TMPL.format(
-            title="uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.2)",
+            title="uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)",
             fname="place-left.py",
             switches=fmt_rows(sw_rows(left)),
             diodes=fmt_rows(d_rows(left)),
@@ -549,7 +604,7 @@ def main():
 
     with open(out("place-right.py"), "w", encoding="utf-8") as f:
         f.write(PLACE_TMPL.format(
-            title="uskn75-kb 右半体 フットプリント配置 (pcb-spec rev 1.2)",
+            title="uskn75-kb 右半体 フットプリント配置 (pcb-spec rev 1.3)",
             fname="place-right.py",
             switches=fmt_rows(sw_rows(right)),
             diodes=fmt_rows(d_rows(right)),
@@ -559,8 +614,8 @@ def main():
     print("  キー数            : 左 %d / 右 %d / 計 %d" % (len(left), len(right), len(left) + len(right)))
     print("  パッド開口中心    : (%.2f, %.2f) mm  = §3" % (pcx * U, pcy * U))
     print("  エンコーダ中心    : " + " / ".join("(%.3f, %.2f)" % (g[0] * U, g[1] * U) for g in enc_geom))
-    print("  キー領域          : 左 %.2f×%.2f / 右 %.2f×%.2f mm  = §1"
-          % ((l_x1 - l_x0) * U, 6 * U, (r_x1 - r_x0) * U, (pcy + 1.025) * U))
+    print("  キー領域          : 左 %.2f×%.2f / 右 %.2f×%.2f mm  = §1（物理 左%d行 / 右%d行）"
+          % ((l_x1 - l_x0) * U, l_rows * U, (r_x1 - r_x0) * U, r_rows * U, l_rows, r_rows))
     print("  JIS Enter         : %s 中心 (%.3f, %.3f) mm / 縦2u" % (enter_ref, enter_cx * U, enter_cy * U))
     print("  ダイオード        : D1..D%d（左は D%d..D%d がエンコーダ押込）"
           % (len(right), len(left) + 1, len(left) + 3))
