@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>分割JIS 75% + Cirque 35mm 設計案 v1.5</title>
+<title>分割JIS 75% + Cirque 35mm 設計案 v1.6</title>
 <style>
   :root{
     --paper:#DDE3E2; --panel:#F3F5F4; --ink:#13232B; --ink2:#4B626C;
@@ -59,7 +59,7 @@
 
 <header>
   <div class="hd-main">
-    <p class="eyebrow">Design proposal / rev 1.5 — 親指Enterと最下段の再配置</p>
+    <p class="eyebrow">Design proposal / rev 1.6 — 無刻印キャップと静音リニアを確定</p>
     <h1>分割型 JIS 75% + Cirque 35mm 円形トラックパッド
       <small>row-staggered・有線・PCBから自製／ポインタは面一埋め込み</small></h1>
   </div>
@@ -235,12 +235,12 @@
 <table>
   <tr><th colspan="4" style="background:#E4E9E8">E. 遊舎工房</th></tr>
   <tr><th>品目</th><th>型番・仕様</th><th>数</th><th>概算</th></tr>
-  <tr><td>キースイッチ</td><td class="mono">MX互換（静音タクタイル系）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
+  <tr><td>キースイッチ</td><td class="mono">MX互換（<b>静音リニア／静音赤軸系</b>）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
   <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">98</td><td class="mono">3,000</td></tr>
   <tr><td><b>スタビライザー</b></td><td class="mono">プレートマウント：2.25u ×2（左Shift・左Space）、縦2u ×1（JIS Enter）</td><td class="mono">3</td><td class="mono">800</td></tr>
   <tr><td>TRRSジャック</td><td class="mono">PJ-320A</td><td class="mono">2</td><td class="mono">300</td></tr>
   <tr><td>TRRSケーブル</td><td class="mono">4極 3.5mm</td><td class="mono">1</td><td class="mono">600</td></tr>
-  <tr><td>キーキャップ</td><td class="mono">JISセット または 無刻印</td><td class="mono">1式</td><td class="mono">8,000〜18,000</td></tr>
+  <tr><td>キーキャップ</td><td class="mono"><b>無刻印で確定</b>（サイズ別の個数は <span class="mono">keycap-sizes.csv</span>）</td><td class="mono">1式</td><td class="mono">8,000〜18,000</td></tr>
   <tr><td>スイッチプレート</td><td class="mono">FR4 1.5mm または アクリル（レーザー加工サービス）</td><td class="mono">2</td><td class="mono">2,000〜4,000</td></tr>
   <tr><td>エンコーダ用ノブ</td><td class="mono">6mm Dシャフト用（自製も可）</td><td class="mono">3</td><td class="mono">900</td></tr>
   <tr><td>ネジ・スペーサー</td><td class="mono">M2 各種</td><td class="mono">1式</td><td class="mono">1,000</td></tr>
@@ -279,13 +279,15 @@
 </div>
 
 <div class="warn">
-  <b>JIS配列キーキャップ</b><br>
-  MX互換のJIS刻印セットは元々選択肢が少なく、定番だったFILCO Majestouch用キーキャップは2026年4月の同社事業終了で今後入手困難になる見込みです。<br>
-  ① Keychron JIS系を先に確保 ／ ② <b>無刻印で組む</b>（HHKB無刻印に慣れているなら最も自由で安価）／ ③ 英字キャップに自分で刻印。<br>
+  <b>キーキャップは無刻印で確定（2026-09-03）</b><br>
+  MX互換のJIS刻印セットは元々選択肢が少なく、定番だったFILCO Majestouch用キーキャップは2026年4月の同社事業終了で今後入手困難になる見込みでした。
+  加えて刻印セットでは BackSpace×3 / Delete×3 / Enter×4 / Esc×2 / Space×2 の重複を汎用14個で埋める必要がありました。
+  <b>無刻印にしたことで重複の概念が消え、揃えるのはサイズ別の個数だけになります。</b><br>
+  <b>残る判断はプロファイルです。</b>統一プロファイル（DSA / XDA）なら行を問わず 1u を80個ばら買いでき、一度の買い出しで揃えやすい。行別プロファイル（Cherry / OEM）は HHKB の指なじみに近いが、行ごとの個数を数える必要があります（内訳は <span class="mono">procurement.md</span> §1）。<br>  <b>縦2u（ISO/JIS Enter）は現物のステム位置を測ってから PCB を出すこと。</b>本設計はスイッチを縦2uの中央 (173.831, 57.150) に置いており、ホーム行中央のステムだと 9.5mm ずれます（<span class="mono">pcb-spec.md</span> §9 U11）。<br>
   「キャップを買ってからPCBのキー幅を確定」の順序を守ってください。
 </div>
 
-<h2>9. PCB 設計仕様 <span>rev 1.2 / 別紙にデータ一式</span></h2>
+<h2>9. PCB 設計仕様 <span>rev 1.3 / 別紙にデータ一式</span></h2>
 <table>
   <tr><th>項目</th><th>左半体</th><th>右半体</th></tr>
   <tr><td>キー数</td><td class="mono">44 + エンコーダ3</td><td class="mono">54</td></tr>
@@ -318,7 +320,7 @@
 
 <h2>8. 進め方 <span>推奨ステップ</span></h2>
 <ul>
-  <li><b>STEP 0</b> — Mouser で <span class="mono">TM035035-2024-002</span> を電子部品とまとめて発注（送料無料ラインを超える構成にする）。同時にキーキャップ方針を確定。</li>
+  <li><b>STEP 0</b> — Mouser で <span class="mono">TM035035-2024-002</span> を電子部品とまとめて発注（送料無料ラインを超える構成にする）。キーキャップ方針は<b>無刻印で確定済み</b>。残りは秋葉原（千石・秋月・遊舎工房）の1回の買い出しで揃える。</li>
   <li><b>STEP 1</b> — パッド単体を Pico に繋いでマウスとして動かす。<b>加速カーブとタップ判定の詰めがこの案の山場</b>なので、基板を起こす前にここで納得しておく。</li>
   <li><b>STEP 2</b> — 開口位置・オーバーレイ厚・縁リブのモックを A1 で出力。厚み 0.8 / 1.0 / 1.2mm と沈み 0.5 / 1.0mm を刷り、<b>H に指を置いただけで誤反応しないか</b>を実際に確かめる。</li>
   <li><b>STEP 3</b> — 右半体を試作。JISキーコードと自動マウス層の検証はここで完結する（左は既存HHKBを併用して評価可能）。</li>
@@ -327,7 +329,7 @@
 
 <div class="warn" style="border-color:var(--ink2)">
   <b style="color:var(--ink2)">静電容量無接点について</b><br>
-  HHKBの打鍵感を再現したい場合、ラバードーム＋コニックスプリング方式の自製は難易度・部品調達とも別次元です。まずはMX互換で作り、打鍵感は静音タクタイル系＋テープ/フォームMODで詰めるのが現実的です。
+  HHKBの打鍵感を再現したい場合、ラバードーム＋コニックスプリング方式の自製は難易度・部品調達とも別次元です。まずはMX互換で作り、打鍵感は<b>静音リニア（静音赤軸系）</b>＋テープ/フォームMODで詰めます。ホットスワップなので<b>軸は後から替えられる</b>ため、この選択は後戻りできます（比較用に別軸を少量まとめて買っておくこと）。
 </div>
 
 </div>
