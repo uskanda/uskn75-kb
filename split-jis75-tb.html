@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>分割JIS 75% + Cirque 35mm 設計案 v1.7</title>
+<title>分割JIS 75% + Cirque 35mm 設計案 v1.8</title>
 <style>
   :root{
     --paper:#DDE3E2; --panel:#F3F5F4; --ink:#13232B; --ink2:#4B626C;
@@ -59,7 +59,7 @@
 
 <header>
   <div class="hd-main">
-    <p class="eyebrow">Design proposal / rev 1.7 — パッドの吊り方を確定</p>
+    <p class="eyebrow">Design proposal / rev 1.8 — 縦2u のステム位置を確定</p>
     <h1>分割型 JIS 75% + Cirque 35mm 円形トラックパッド
       <small>row-staggered・有線・PCBから自製／ポインタは面一埋め込み</small></h1>
   </div>
@@ -238,7 +238,7 @@
   <tr><td>キースイッチ</td><td class="mono">MX互換（<b>静音リニア／静音赤軸系</b>）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
   <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">98</td><td class="mono">3,000</td></tr>
   <tr><td><b>スタビライザー</b></td><td class="mono">プレートマウント：2.25u ×2（左Shift・左Space）、縦2u ×1（JIS Enter）</td><td class="mono">3</td><td class="mono">800</td></tr>
-  <tr><td>TRRSジャック</td><td class="mono">PJ-320A</td><td class="mono">2</td><td class="mono">300</td></tr>
+  <tr><td>TRRSジャック</td><td class="mono">MJ-4PP-9（秋月 106070・rev 1.8 で PJ-320A から変更）</td><td class="mono">2</td><td class="mono">200</td></tr>
   <tr><td>TRRSケーブル</td><td class="mono">4極 3.5mm</td><td class="mono">1</td><td class="mono">600</td></tr>
   <tr><td>キーキャップ</td><td class="mono"><b>無刻印で確定 / プロファイルは行別 Cherry・OEM で暫定</b>（サイズ別の個数は <span class="mono">keycap-sizes.csv</span>、行別の買う数は procurement.md §2E）</td><td class="mono">1式</td><td class="mono">8,000〜18,000</td></tr>
   <tr><td>スイッチプレート</td><td class="mono"><b>非導電材に限る</b>（PETG 自製 / アクリル）。金属は不可 — リップがオーバーレイ外周を覆うため</td><td class="mono">2</td><td class="mono">0〜4,000</td></tr>
@@ -289,7 +289,7 @@
   MX互換のJIS刻印セットは元々選択肢が少なく、定番だったFILCO Majestouch用キーキャップは2026年4月の同社事業終了で今後入手困難になる見込みでした。
   加えて刻印セットでは BackSpace×3 / Delete×3 / Enter×4 / Esc×2 / Space×2 の重複を汎用14個で埋める必要がありました。
   <b>無刻印にしたことで重複の概念が消え、揃えるのはサイズ別の個数だけになります。</b><br>
-  <b>プロファイルは 行別 Cherry / OEM で暫定確定</b>（HHKB の指なじみを優先）。行ごとの個数を数えて買う必要があります（内訳と買う数は <span class="mono">procurement.md</span> §1 / §2E）。<br>  <b>縦2u（ISO/JIS Enter）は現物のステム位置を測ってから PCB を出すこと。</b>本設計はスイッチを縦2uの中央 (173.831, 57.150) に置いており、ホーム行中央のステムだと 9.5mm ずれます（<span class="mono">pcb-spec.md</span> §9 U11）。<br>
+  <b>プロファイルは 行別 Cherry / OEM で暫定確定</b>（HHKB の指なじみを優先）。行ごとの個数を数えて買う必要があります（内訳と買う数は <span class="mono">procurement.md</span> §1 / §2E）。<br>  <b>縦2u（ISO/JIS Enter）のステム位置は rev 1.8 で確定しました。</b>本設計のスイッチ位置 (173.831, 57.150) は KiCad 公式の ISO Enter フットプリント（Cherry MX カタログ由来）と一致していて、縦2u の中心かつ下段 1.25u の中心にあたります。ステム位置を決めているのはプロファイルではなく MX + ISO の PCB 慣習です（<span class="mono">pcb-spec.md</span> §9 U11 / §7）。<br>
   「キャップを買ってからPCBのキー幅を確定」の順序を守ってください。
 </div>
 
