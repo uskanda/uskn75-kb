@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>分割JIS 75% + Cirque 35mm 設計案 v1.8</title>
+<title>分割JIS 75% + Cirque 35mm 設計案 v1.9</title>
 <style>
   :root{
     --paper:#DDE3E2; --panel:#F3F5F4; --ink:#13232B; --ink2:#4B626C;
@@ -59,7 +59,7 @@
 
 <header>
   <div class="hd-main">
-    <p class="eyebrow">Design proposal / rev 1.8 — 縦2u のステム位置を確定</p>
+    <p class="eyebrow">Design proposal / rev 1.9 — 半体間接続を USB-C へ</p>
     <h1>分割型 JIS 75% + Cirque 35mm 円形トラックパッド
       <small>row-staggered・有線・PCBから自製／ポインタは面一埋め込み</small></h1>
   </div>
@@ -190,7 +190,7 @@
   <tr><td>MCU（右・マスタ）</td><td class="mono">Waveshare RP2040-Plus</td><td>Pico互換ピンアウトで26GPIO、<b>USB Type-C</b>。16(matrix)+4(SPI)+1(DR)+2(serial)=<b>23本</b>で収まる</td></tr>
   <tr><td>MCU（左・スレーブ）</td><td class="mono">Raspberry Pi Pico</td><td>16(matrix)+2(serial)+6(enc)=<b>24本</b>。USBは書き込み時のみ使うので micro-USB で支障なし</td></tr>
   <tr><td>ポインタ</td><td class="mono">Cirque Pinnacle / <b>SPI</b></td><td>モジュールは<b>既定でSPIモード</b>。I2Cにするにはチップ抵抗2個の除去が必要なので、素直にSPIで組む。DR（Data Ready）ピンは繋いだ方が応答が良い</td></tr>
-  <tr><td>半体間接続</td><td class="mono">TRRS 4極</td><td>通電中の抜き差し厳禁</td></tr>
+  <tr><td>半体間接続</td><td class="mono">USB-C（<b>USB 通信ではなく4本を通すだけ</b>）</td><td>D+/D− を A/B 両側で束ねてリバーシブル。CC に Rd を載せない。<b>PC・充電器に挿さない</b>（rev 1.9 で TRRS から変更）</td></tr>
   <tr><td>ホスト接続</td><td class="mono">USB Type-C（<b>右半体</b>）</td><td>ESD保護・PTCはボード側に実装済みのため自前実装は不要</td></tr>
   <tr><td>ファーム</td><td class="mono">QMK（Vial fork）</td><td><b>MASTER_RIGHT</b> を定義。パッドがマスタ直結になるため <b>SPLIT_POINTING_ENABLE は不要</b></td></tr>
   <tr><td>JISキーコード</td><td class="mono">INT1〜INT5</td><td>ろ / かな / ¥ / 変換 / 無変換。OS側も日本語106設定にする</td></tr>
@@ -238,8 +238,8 @@
   <tr><td>キースイッチ</td><td class="mono">MX互換（<b>静音リニア／静音赤軸系</b>）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
   <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">98</td><td class="mono">3,000</td></tr>
   <tr><td><b>スタビライザー</b></td><td class="mono">プレートマウント：2.25u ×2（左Shift・左Space）、縦2u ×1（JIS Enter）</td><td class="mono">3</td><td class="mono">800</td></tr>
-  <tr><td>TRRSジャック</td><td class="mono">MJ-4PP-9（秋月 106070・rev 1.8 で PJ-320A から変更）</td><td class="mono">2</td><td class="mono">200</td></tr>
-  <tr><td>TRRSケーブル</td><td class="mono">4極 3.5mm</td><td class="mono">1</td><td class="mono">600</td></tr>
+  <tr><td>半体間 USB-C コネクタ</td><td class="mono">秋月 114356／Neltron 5077CR-16-SMC2-BK-TR（16ピン・rev 1.9 で TRRS から変更）</td><td class="mono">2</td><td class="mono">220</td></tr>
+  <tr><td>半体間 USB-C ケーブル</td><td class="mono">秋月 117018／USB2.0 C⇔C 0.5m（充電専用品は不可）</td><td class="mono">1</td><td class="mono">110</td></tr>
   <tr><td>キーキャップ</td><td class="mono"><b>無刻印で確定 / プロファイルは行別 Cherry・OEM で暫定</b>（サイズ別の個数は <span class="mono">keycap-sizes.csv</span>、行別の買う数は procurement.md §2E）</td><td class="mono">1式</td><td class="mono">8,000〜18,000</td></tr>
   <tr><td>スイッチプレート</td><td class="mono"><b>非導電材に限る</b>（PETG 自製 / アクリル）。金属は不可 — リップがオーバーレイ外周を覆うため</td><td class="mono">2</td><td class="mono">0〜4,000</td></tr>
   <tr><td>エンコーダ用ノブ</td><td class="mono">6mm Dシャフト用（自製も可）</td><td class="mono">3</td><td class="mono">900</td></tr>
@@ -280,7 +280,7 @@
   <b>調達：Mouser Japan が最安。ただし単品買いはしないこと</b><br>
   Cirque の正規流通は Mouser で、<span class="mono">355-TM0350352024-002</span> として1個から買えます。単価は <b>約9.6 USD（1,500円前後）</b>、在庫も潤沢です。趣味系ショップ（keycapsss / beekeeb / splitkb）は数倍の価格になるため、価格だけで見れば比較になりません。<br>
   Mouser Japan は<b>関税・消費税込み（DDP）</b>で、<b>一定額以上の注文は日本への送料が無料</b>になります（2026年時点でおおむね6,000〜7,500円のライン。金額は変動するので必ずカートで確認してください）。<br>
-  パッド1個だけでは送料が乗って割高になります。<b>パッドを2枚（予備込み）＋FPCコネクタ＋タクトスイッチ</b>を発注してください。<b>FFCケーブルは千石電商の方が確実かつ安い</b>ため外しています。TRRSジャック・ダイオード・MCUも国内が有利です。無料ラインに届かない場合は 1N4148W を100本足して調整してください。<br>
+  パッド1個だけでは送料が乗って割高になります。<b>パッドを2枚（予備込み）＋FPCコネクタ＋タクトスイッチ</b>を発注してください。<b>FFCケーブルは千石電商の方が確実かつ安い</b>ため外しています。半体間 USB-C コネクタ・ダイオード・MCUも国内が有利です。無料ラインに届かない場合は 1N4148W を100本足して調整してください。<br>
   <b>型番の末尾は必ず -002 を指定</b>してください。-003 は曲面オーバーレイ、-001 は粘着オーバーレイで、いずれも今回の面一埋め込みには使えません。
 </div>
 
@@ -303,7 +303,7 @@
   <tr><td>基板外形</td><td class="mono"><b>197.4 × 162.35 mm</b>（段付き・親指Enterぶんが下へ張り出す）</td><td class="mono"><b>260.4 × 162.35 mm</b>（段付き・パッド側へ左端延長＋親指Enter）</td></tr>
   <tr><td>層構成</td><td colspan="2" class="mono">2層 / 1.6mm / HASL</td></tr>
 </table>
-<p class="note"><b>上端に Y=−26〜0 の帯を追加しました。</b>キーピッチ19.05mmに対しPicoの幅は21mmあり、キーの間にMCUを置けません。この帯にMCU・USB・TRRSをまとめます。</p>
+<p class="note"><b>上端に Y=−26〜0 の帯を追加しました。</b>キーピッチ19.05mmに対しPicoの幅は21mmあり、キーの間にMCUを置けません。この帯にMCU・USB・半体間 USB-C をまとめます。</p>
 <table>
   <tr><th>トラックパッド開口</th><th>値</th></tr>
   <tr><td>中心座標</td><td class="mono">X = 6.48 mm / Y = 76.20 mm（原点＝キー領域左上・rev 1.5 で移設）</td></tr>
@@ -460,7 +460,7 @@ document.getElementById('mock-r').innerHTML=rightSVG;
   s+=box(435,40,170,94,'Cirque 35mm','TM035035-2024-002','#0E6B60');
   s+=`<line x1="270" y1="134" x2="270" y2="176" stroke="#4B626C" stroke-width="1.4"/>
       <polygon points="270,183 266,176 274,176" fill="#4B626C"/>
-      <text x="282" y="162" font-family="ui-monospace,monospace" font-size="9.5" fill="#4B626C">TRRS serial</text>`;
+      <text x="282" y="162" font-family="ui-monospace,monospace" font-size="9.5" fill="#4B626C">USB-C serial (UART)</text>`;
   s+=box(175,183,190,80,'左半体 PCB（スレーブ）','Raspberry Pi Pico / 6×10');
   s+=`<text x="0" y="292" font-family="ui-monospace,monospace" font-size="10" fill="#4B626C">
       ※ USB を右へ移したことで、ポインタがマスタ直結になり split transaction が不要になった</text>`;
