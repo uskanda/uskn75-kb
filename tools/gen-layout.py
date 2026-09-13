@@ -14,7 +14,7 @@ uskn75-kb レイアウト成果物ジェネレータ
 
 出力:
   kle-left.json / kle-right.json      … KLE raw。左上ラベル = "row,col"（VIA互換 / kbplacer 自動検出）
-  matrix-left.csv / matrix-right.csv  … 全95キーの座標・行列位置・ラベル・ダイオード位置
+  matrix-left.csv / matrix-right.csv  … 全99キーの座標・行列位置・ラベル・ダイオード位置
   encoders-left.csv                   … エンコーダ3個の座標とピン割当
 
 座標系: 原点はキー領域の左上（u座標 0,0）／ Y は下方向が正（KiCadと同じ）／ 1u = 19.05mm
@@ -37,11 +37,10 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 HTML = os.path.join(ROOT, "split-jis75-tb.html")
 SPEC = os.path.join(ROOT, "pcb-spec.md")
 
-# pcb-spec §7: プレートマウント・3箇所のみ
+# pcb-spec §7: 2箇所のみ（rev 2.0 で縦2u の JIS Enter を廃止）
 STABS = {("L", 4, 0): "2.25u",   # 左 LShift
-         ("L", 5, 5): "2.25u",   # 左 Space（rev 1.5 で COL4 -> COL5）
-         ("R", 2, 9): "v2u"}     # 右 JIS Enter（縦2u。rev 1.5 で COL8 -> COL9）
-# 親指Enter（左右各1.5u）は対象外。2u未満はスタビ無しが標準（pcb-spec §7）
+         ("L", 5, 5): "2.25u"}   # 左 Space（rev 1.5 で COL4 -> COL5）
+# 親指Enter・右の Enter / EnterU（1.25u / 1.5u）は対象外。2u未満はスタビ無しが標準（pcb-spec §7）
 
 # pcb-spec §5「内側増設列（R4）」。rev 1.5:
 #   左は ROW5 の Fn1 が最下段左端へ移動して抜けた
@@ -98,23 +97,6 @@ def read_pad_geometry():
         die("circlePad() のジオメトリを読めない")
     bx, by, bw, bh = (float(g) for g in m.groups())
     return bx + bw / 2.0, by + bh / 2.0
-
-
-def read_jis_enter():
-    """jisEnter() の x1/x2/x3・y1/y2/y3 から JIS Enter の外形を求める（u座標）"""
-    src = open(HTML, encoding="utf-8").read()
-    i = src.index("function jisEnter()")
-    body = src[i:i + 400]
-    v = {}
-    for name, unit in (("x1", "U"), ("x2", "U"), ("x3", "U"),
-                       ("y1", "ROWH"), ("y2", "ROWH"), ("y3", "ROWH")):
-        m = re.search(r"\b%s=([\d.]+)\*%s\b" % (name, unit), body)
-        if not m:
-            die("jisEnter() の %s を読めない" % name)
-        v[name] = float(m.group(1))
-    # 上段: x1..x2 (1.5u) を y1..y2、下段: x3..x2 (1.25u) を y2..y3
-    return {"x_top": v["x1"], "x_bot": v["x3"], "x_right": v["x2"],
-            "y_top": v["y1"], "y_mid": v["y2"], "y_bot": v["y3"]}
 
 
 def read_encoder_geometry():
@@ -240,7 +222,7 @@ def near(a, b, tol=0.02):
     return abs(a - b) <= tol
 
 
-def build(side, html_rows, matrix, extra_keys, offrow):
+def build(side, html_rows, matrix, offrow):
     """物理(HTML) と 論理(pcb-spec §5) を左から順に対応付ける
 
     物理行 ri < len(matrix) は ROW ri へそのまま対応。それ以外（親指行）は §5.6 の表に従う。
@@ -256,8 +238,6 @@ def build(side, html_rows, matrix, extra_keys, offrow):
     n = 0
     for ri, row in enumerate(html_rows):
         phys = sorted(row, key=lambda k: k[1])
-        for lbl, x, w in extra_keys.get(ri, []):
-            phys.append((lbl, x, w))          # 右ROW2の JIS Enter を末尾(COL9)へ
         slots = []
         if ri < nlog:
             for ci, c in enumerate(matrix[ri]):
@@ -288,7 +268,7 @@ def build(side, html_rows, matrix, extra_keys, offrow):
 
 # --------------------------------------------------------------- 出力: KLE
 
-def kle(keys, meta_notes, jis_enter=None):
+def kle(keys, meta_notes):
     """KLE raw JSON。左上ラベル(index0) = "row,col"（VIA互換 / kbplacer 自動検出）"""
     doc = [{"name": meta_notes["name"], "notes": meta_notes["notes"]}]
     by_row = {}
@@ -300,14 +280,9 @@ def kle(keys, meta_notes, jis_enter=None):
             p = {}
             if not near(k["x"], cx, 1e-9):
                 p["x"] = round(k["x"] - cx, 4)
-            if jis_enter and k["ref"] == jis_enter["ref"]:
-                # ISO/JIS Enter: 主矩形 1.25u×2u、副矩形 1.5u×1u を 0.25u 左へ
-                p.update({"w": 1.25, "h": 2, "w2": 1.5, "h2": 1, "x2": -0.25})
-                cx = k["x"] + 1.25
-            else:
-                if not near(k["w"], 1.0, 1e-9):
-                    p["w"] = k["w"]
-                cx = k["x"] + k["w"]
+            if not near(k["w"], 1.0, 1e-9):
+                p["w"] = k["w"]
+            cx = k["x"] + k["w"]
             if p:
                 line.append(p)
             line.append("%d,%d" % (k["row"], k["col"]))
@@ -332,8 +307,8 @@ CSV_COLS = ["ref", "row", "col", "phys_row", "row_gpio", "col_gpio", "name", "la
 
 
 def capsize(k):
-    """キーキャップのサイズ表記"""
-    return "JIS Enter(v2u)" if k["h"] == 2.0 else ("%gu" % k["w"])
+    """キーキャップのサイズ表記（rev 2.0 で縦2u を廃止し、全キーが1行ぶんの高さ）"""
+    return "%gu" % k["w"]
 
 
 def write_keycap_csv(path, left, right):
@@ -349,7 +324,7 @@ def write_keycap_csv(path, left, right):
             per[side][sz] += 1
             if (side, k["row"], k["col"]) in INNER:
                 inner[sz] += 1
-    order = sorted(tot, key=lambda s: (s.startswith("JIS"), float(s[:-1]) if s.endswith("u") and not s.startswith("JIS") else 0))
+    order = sorted(tot, key=lambda s: float(s[:-1]))
     with open(path, "w", newline="", encoding="utf-8") as f:
         w = csv.writer(f)
         w.writerow(["size", "left", "right", "total", "inner_column", "outside_inner"])
@@ -387,7 +362,7 @@ KiCad の「ツール > スクリプトコンソール」で:
 
     exec(open("/path/to/{fname}").read())
 
-座標は pcb-spec.md rev 1.3 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
+座標は pcb-spec.md rev 1.4 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
 ORIGIN_X_MM / ORIGIN_Y_MM で、その原点を基板シート上のどこへ置くかを決める。
 
 生成元: tools/gen-layout.py（split-jis75-tb.html + pcb-spec.md から生成。手で編集しない）
@@ -467,33 +442,19 @@ def main():
     enc_geom = read_encoder_geometry()
     enc_spec = read_encoder_spec()
     offrow = read_offrow()
-    je = read_jis_enter()
 
-    # --- 右半体の JIS Enter を物理キーとして注入（HTML では jisEnter() で別描画）
-    #     スイッチ中心は縦2uの軸（下段1.25uの中心線）上、行 y_top..y_bot の中央
-    enter_cx = (je["x_bot"] + je["x_right"]) / 2.0
-    enter_cy = (je["y_top"] + je["y_bot"]) / 2.0
-    extra_right = {2: [("Enter", je["x_bot"], je["x_right"] - je["x_bot"])]}
+    left = build("L", html["LEFT"], read_matrix("### 左半体（6×10）"), offrow)
+    right = build("R", html["RIGHT"], read_matrix("### 右半体（6×10）"), offrow)
 
-    left = build("L", html["LEFT"], read_matrix("### 左半体（6×10）"), {}, offrow)
-    right = build("R", html["RIGHT"], read_matrix("### 右半体（6×10）"), extra_right, offrow)
-
-    # --- 中心座標を確定
-    enter_ref = None
-    for k in left:
-        k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["prow"] + 0.5     # Y は物理行
-    for k in right:
-        if k["name"] == "Enter" and k["row"] == 2 and k["col"] == 9:
-            k["cx"], k["cy"], k["h"] = enter_cx, enter_cy, 2.0
-            enter_ref = k["ref"]
-        else:
-            k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["prow"] + 0.5
+    # --- 中心座標を確定（Y は物理行）
+    for k in left + right:
+        k["cx"], k["cy"] = k["x"] + k["w"] / 2.0, k["prow"] + 0.5
 
     # --- 突合1: キー数
     if len(left) != 44:
         die("左半体のキー数が %d（44でない）" % len(left))
-    if len(right) != 54:
-        die("右半体のキー数が %d（54でない）" % len(right))
+    if len(right) != 55:
+        die("右半体のキー数が %d（55でない）" % len(right))
 
     # --- 突合2: パッド開口中心（HTML circlePad vs pcb-spec §3）
     pcx, pcy = read_pad_geometry()
@@ -534,7 +495,7 @@ def main():
     rr_gpio, rc_gpio = read_pins("### 右半体（RP2040-Plus / マスタ）")
 
     notes = ("生成物。手で編集しない。生成元は tools/gen-layout.py "
-             "（入力: split-jis75-tb.html の配列 + pcb-spec.md rev 1.3 §4/§5/§5.5/§5.6）。"
+             "（入力: split-jis75-tb.html の配列 + pcb-spec.md rev 1.4 §4/§5/§5.5/§5.6）。"
              "左上ラベルは row,col（VIA互換 / kbplacer が自動検出）。"
              "1u=19.05mm・原点はキー領域左上・Y下向き正。"
              "ロータリーエンコーダは含まない（encoders-left.csv 参照）。")
@@ -542,10 +503,9 @@ def main():
     out = lambda n: os.path.join(ROOT, n)
 
     write_kle(out("kle-left.json"),
-              kle(left, {"name": "uskn75-kb left (rev 1.3)", "notes": notes}))
+              kle(left, {"name": "uskn75-kb left (rev 1.4)", "notes": notes}))
     write_kle(out("kle-right.json"),
-              kle(right, {"name": "uskn75-kb right (rev 1.3)", "notes": notes},
-                  jis_enter={"ref": enter_ref}))
+              kle(right, {"name": "uskn75-kb right (rev 1.4)", "notes": notes}))
 
     write_matrix_csv(out("matrix-left.csv"), "L", left, lr_gpio, lc_gpio)
     write_matrix_csv(out("matrix-right.csv"), "R", right, rr_gpio, rc_gpio)
@@ -592,7 +552,7 @@ def main():
 
     with open(out("place-left.py"), "w", encoding="utf-8") as f:
         f.write(PLACE_TMPL.format(
-            title="uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)",
+            title="uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.4)",
             fname="place-left.py",
             switches=fmt_rows(sw_rows(left)),
             diodes=fmt_rows(d_rows(left)),
@@ -604,7 +564,7 @@ def main():
 
     with open(out("place-right.py"), "w", encoding="utf-8") as f:
         f.write(PLACE_TMPL.format(
-            title="uskn75-kb 右半体 フットプリント配置 (pcb-spec rev 1.3)",
+            title="uskn75-kb 右半体 フットプリント配置 (pcb-spec rev 1.4)",
             fname="place-right.py",
             switches=fmt_rows(sw_rows(right)),
             diodes=fmt_rows(d_rows(right)),
@@ -616,7 +576,6 @@ def main():
     print("  エンコーダ中心    : " + " / ".join("(%.3f, %.2f)" % (g[0] * U, g[1] * U) for g in enc_geom))
     print("  キー領域          : 左 %.2f×%.2f / 右 %.2f×%.2f mm  = §1（物理 左%d行 / 右%d行）"
           % ((l_x1 - l_x0) * U, l_rows * U, (r_x1 - r_x0) * U, r_rows * U, l_rows, r_rows))
-    print("  JIS Enter         : %s 中心 (%.3f, %.3f) mm / 縦2u" % (enter_ref, enter_cx * U, enter_cy * U))
     print("  ダイオード        : D1..D%d（左は D%d..D%d がエンコーダ押込）"
           % (len(right), len(left) + 1, len(left) + 3))
     print("  キーキャップ      : " + " / ".join("%s×%d" % (s, n) for s, n in sorted(cap_tot.items())))

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>分割JIS 75% + Cirque 35mm 設計案 v1.9</title>
+<title>分割JIS 75% + Cirque 35mm 設計案 v2.0</title>
 <style>
   :root{
     --paper:#DDE3E2; --panel:#F3F5F4; --ink:#13232B; --ink2:#4B626C;
@@ -59,12 +59,12 @@
 
 <header>
   <div class="hd-main">
-    <p class="eyebrow">Design proposal / rev 1.9 — 半体間接続を USB-C へ</p>
+    <p class="eyebrow">Design proposal / rev 2.0 — Enter を1行ぶんのキー2個へ</p>
     <h1>分割型 JIS 75% + Cirque 35mm 円形トラックパッド
       <small>row-staggered・有線・PCBから自製／ポインタは面一埋め込み</small></h1>
   </div>
   <div class="hd-meta mono">
-    <div><b>KEYS</b>98 + エンコーダ3</div>
+    <div><b>KEYS</b>99 + エンコーダ3</div>
     <div><b>MCU</b>右=RP2040-Plus(マスタ) / 左=Pico</div>
     <div><b>POINTING</b>TM035035-2024-002 / SPI</div>
     <div><b>CLICK</b>タップ + ホーム行（自動マウス層）／ Fn2 廃止</div>
@@ -81,7 +81,7 @@
     <span><i style="background:#A9D4CD;border-color:var(--pad)"></i>円形トラックパッド</span>
     <span><i style="background:#F0C7AC;border-color:var(--add)"></i>ロータリーエンコーダ</span>
   </div>
-  <figcaption>FIG.1 — 最下段の下に親指Enterを左右1個ずつ（1.5u）。左端のエンコーダ3個は各2行ぶんを占有。右内側列の無刻印2キーは Vial で後決め</figcaption>
+  <figcaption>FIG.1 — 最下段の下に親指Enterを左右1個ずつ（1.5u）。左端のエンコーダ3個は各2行ぶんを占有。右内側列の無刻印2キーは Vial で後決め。右の Enter は Q行 1.5u とホーム行 1.25u の2キーで、当面どちらも Enter（rev 2.0 で縦2u を廃止）</figcaption>
 </figure>
 
 <h2>2. 設置イメージ <span>ハの字 15〜20° / 分離幅 150〜250mm（肩幅）</span></h2>
@@ -227,7 +227,7 @@
   <tr><th colspan="4" style="background:#E4E9E8">D. 秋月電子通商</th></tr>
   <tr><th>品目</th><th>型番</th><th>数</th><th>概算</th></tr>
   <tr><td>左半体MCU（スレーブ）</td><td class="mono">Raspberry Pi Pico</td><td class="mono">1</td><td class="mono">800</td></tr>
-  <tr><td>ダイオード</td><td class="mono">1N4148W（SOD-123）</td><td class="mono"><b>200</b>（必要101 = キー98 + エンコーダ押込3、+予備）</td><td class="mono">800</td></tr>
+  <tr><td>ダイオード</td><td class="mono">1N4148W（SOD-123）</td><td class="mono"><b>200</b>（必要102 = キー99 + エンコーダ押込3、+予備）</td><td class="mono">800</td></tr>
   <tr><td><b>ロータリーエンコーダ</b></td><td class="mono">EC11互換（縦型・プッシュ付き）</td><td class="mono">3</td><td class="mono">600</td></tr>
   <tr><td>MCU実装用ピンヘッダ／ソケット</td><td class="mono">2.54mm 20ピン</td><td class="mono">4</td><td class="mono">400</td></tr>
 </table>
@@ -235,9 +235,9 @@
 <table>
   <tr><th colspan="4" style="background:#E4E9E8">E. 遊舎工房</th></tr>
   <tr><th>品目</th><th>型番・仕様</th><th>数</th><th>概算</th></tr>
-  <tr><td>キースイッチ</td><td class="mono">MX互換（<b>静音リニア／静音赤軸系</b>）</td><td class="mono">98</td><td class="mono">6,000〜10,000</td></tr>
-  <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">98</td><td class="mono">3,000</td></tr>
-  <tr><td><b>スタビライザー</b></td><td class="mono"><b>要否・方式は打鍵してから決める</b>（プレートマウント／PCB マウント。PCB には穴を開けておく）：2.25u ×2（左Shift・左Space）、縦2u ×1（JIS Enter）</td><td class="mono">3</td><td class="mono">800</td></tr>
+  <tr><td>キースイッチ</td><td class="mono">MX互換（<b>静音リニア／静音赤軸系</b>）</td><td class="mono">99</td><td class="mono">6,000〜10,000</td></tr>
+  <tr><td>ホットスワップソケット</td><td class="mono">Kailh MX用</td><td class="mono">99</td><td class="mono">3,000</td></tr>
+  <tr><td><b>スタビライザー</b></td><td class="mono"><b>要否・方式は打鍵してから決める</b>（プレートマウント／PCB マウント。PCB には穴を開けておく）：2.25u ×2（左Shift・左Space）。縦2u（JIS Enter）は rev 2.0 で廃止</td><td class="mono">2</td><td class="mono">800</td></tr>
   <tr><td>半体間 USB-C コネクタ</td><td class="mono">秋月 115426 DIP 化キット（AE-USB2.0-TYPE-C-5077CR・2.54mm 7ピン。CN2: VBUS / D− / D+ / GND / CC1 / CC2 / GND）</td><td class="mono">2</td><td class="mono">360</td></tr>
   <tr><td>ピンヘッダー</td><td class="mono">1×40 2.54mm（キット用・Pico 用）</td><td class="mono">2</td><td class="mono">70</td></tr>
   <tr><td>半体間 USB-C ケーブル</td><td class="mono">秋月 117018／USB2.0 C⇔C 0.5m（充電専用品は不可）</td><td class="mono">1</td><td class="mono">110</td></tr>
@@ -290,14 +290,14 @@
   MX互換のJIS刻印セットは元々選択肢が少なく、定番だったFILCO Majestouch用キーキャップは2026年4月の同社事業終了で今後入手困難になる見込みでした。
   加えて刻印セットでは BackSpace×3 / Delete×3 / Enter×4 / Esc×2 / Space×2 の重複を汎用14個で埋める必要がありました。
   <b>無刻印にしたことで重複の概念が消え、揃えるのはサイズ別の個数だけになります。</b><br>
-  <b>プロファイルは 行別 Cherry / OEM で暫定確定</b>（HHKB の指なじみを優先）。行ごとの個数を数えて買う必要があります（内訳と買う数は <span class="mono">procurement.md</span> §1 / §2E）。<br>  <b>縦2u（ISO/JIS Enter）のステム位置は rev 1.8 で確定しました。</b>本設計のスイッチ位置 (173.831, 57.150) は KiCad 公式の ISO Enter フットプリント（Cherry MX カタログ由来）と一致していて、縦2u の中心かつ下段 1.25u の中心にあたります。ステム位置を決めているのはプロファイルではなく MX + ISO の PCB 慣習です（<span class="mono">pcb-spec.md</span> §9 U11 / §7）。<br>
+  <b>プロファイルは 行別 Cherry / OEM で暫定確定</b>（HHKB の指なじみを優先）。行ごとの個数を数えて買う必要があります（内訳と買う数は <span class="mono">procurement.md</span> §1 / §2E）。<br>  <b>縦2u（JIS Enter）は rev 2.0 で廃止しました。</b>無刻印の縦2u は入手性が極めて悪いためです。Enter は Q行の 1.5u とホーム行の 1.25u に分け、当面はどちらにも Enter を割り当てます。2キーを合わせた範囲は旧 JIS Enter の外形と同じなので、JIS109 の指の記憶はそのまま使えます（<span class="mono">pcb-spec.md</span> §11）。<br>
   「キャップを買ってからPCBのキー幅を確定」の順序を守ってください。
 </div>
 
-<h2>9. PCB 設計仕様 <span>rev 1.3 / 別紙にデータ一式</span></h2>
+<h2>9. PCB 設計仕様 <span>rev 1.4 / 別紙にデータ一式</span></h2>
 <table>
   <tr><th>項目</th><th>左半体</th><th>右半体</th></tr>
-  <tr><td>キー数</td><td class="mono">44 + エンコーダ3</td><td class="mono">54</td></tr>
+  <tr><td>キー数</td><td class="mono">44 + エンコーダ3</td><td class="mono">55</td></tr>
   <tr><td>マトリクス</td><td class="mono">6行 × 10列（COL8は押込専用 / COL9は親指Enter）</td><td class="mono">6行 × 10列</td></tr>
   <tr><td>必要GPIO</td><td class="mono">16 + シリアル2 + エンコーダ6 = <b>24</b></td><td class="mono">16 + SPI4 + DR1 + シリアル2 = <b>23</b></td></tr>
   <tr><td>キー領域</td><td class="mono">191.5 × 133.35 mm</td><td class="mono">238.1 × 133.35 mm</td></tr>
@@ -355,8 +355,8 @@ const LEFT=[
 const RIGHT=[
  [["",-0.25,1,'a'],["Ins",0.75,1,'a'],["F7",1.75],["F8",2.75],["F9",3.75],["F10",4.75],["F11",5.75],["F12",6.75],["Del",7.75,1,'m'],["PrSc",8.75,1,'m']],
  [["",-0.25,1,'a'],["BS",0.75,1,'a'],["7",1.75],["8",2.75],["9",3.75],["0",4.75],["-",5.75],["^",6.75],["¥",7.75],["BS",8.75,1,'m']],
- [["Del",0.25,1,'a'],["Y",1.25],["U",2.25],["I",3.25],["O",4.25],["P",5.25],["@",6.25],["[",7.25]],
- [["H",1.5],["J",2.5],["K",3.5],["L",4.5],[";",5.5],[":",6.5],["]",7.5]],
+ [["Del",0.25,1,'a'],["Y",1.25],["U",2.25],["I",3.25],["O",4.25],["P",5.25],["@",6.25],["[",7.25],["Enter",8.25,1.5,'m']],
+ [["H",1.5],["J",2.5],["K",3.5],["L",4.5],[";",5.5],[":",6.5],["]",7.5],["Enter",8.5,1.25,'m']],
  [["N",2],["M",3],[",",4],[".",5],["/",6],["\\",7],["Shift",8,1.75,'m'],["↑",10.25,1,'m']],
  [["Space",0.05,1.75,'m'],["変換",1.8,1.25,'m'],["かな",3.05,1.25,'m'],["Alt",4.3,1,'m'],["App",5.3,1,'m'],["Ctrl",6.3,1.25,'m'],["←",9.25,1,'m'],["↓",10.25,1,'m'],["→",11.25,1,'m']],
  [["Enter",1.8,1.5,'a']]
@@ -374,14 +374,6 @@ function key(x,y,w,h,label,type,fs){
 function renderHalf(rows,extra){
   let s=''; rows.forEach((row,ri)=>{row.forEach(k=>{s+=key(k[1],ri,k[2]||1,1,k[0],k[3]);});});
   return s+(extra||'');
-}
-function jisEnter(){
-  const x1=8.25*U+GAP/2,x2=9.75*U-GAP/2,x3=8.5*U+GAP/2;
-  const y1=2*ROWH+GAP/2,y2=3*ROWH,y3=4*ROWH-GAP/2;
-  return `<path d="M${x1},${y1} L${x2},${y1} L${x2},${y3} L${x3},${y3} L${x3},${y2} L${x1},${y2} Z"
-    fill="#CBD4D3" stroke="#13232B" stroke-width="1.2" stroke-linejoin="round"/>
-    <text x="${(x1+x2)/2}" y="${y1+30}" text-anchor="middle" font-family="ui-monospace,monospace"
-      font-size="11" fill="#13232B">Enter</text>`;
 }
 /* 35mm circle trackpad, flush-mounted at the inner column (home row - Z row) */
 function circlePad(){
@@ -423,12 +415,12 @@ function encoders(){
 function svgWrap(inner,w,h,pad){pad=pad||6;
   return `<svg viewBox="${-pad} ${-pad} ${w+pad*2} ${h+pad*2}" width="${w+pad*2}">${inner}</svg>`;}
 const leftSVG=svgWrap(`<g transform="translate(${1.55*U},0)">`+renderHalf(LEFT)+encoders()+`</g>`,10.05*U,7*ROWH,20);
-const rightSVG=svgWrap(renderHalf(RIGHT,jisEnter()+circlePad()),12.25*U,7.0*ROWH,36);
+const rightSVG=svgWrap(renderHalf(RIGHT,circlePad()),12.25*U,7.0*ROWH,36);
 (function(){
   const SPLIT=1.6*U, w=1.55*U+8.5*U+SPLIT+12.25*U, h=7.9*ROWH;
   const SH=1.55*U;
   let s=`<g transform="translate(${SH},0)">${renderHalf(LEFT)}${encoders()}</g>`;
-  s+=`<g transform="translate(${SH+8.5*U+SPLIT},0)">${renderHalf(RIGHT,jisEnter()+circlePad())}</g>`;
+  s+=`<g transform="translate(${SH+8.5*U+SPLIT},0)">${renderHalf(RIGHT,circlePad())}</g>`;
   const dx1=SH+8.5*U,dx2=SH+8.5*U+SPLIT,dy=-16;
   s+=`<line x1="${dx1}" y1="${dy}" x2="${dx2}" y2="${dy}" stroke="#4B626C" stroke-width="1"/>
       <line x1="${dx1}" y1="${dy-5}" x2="${dx1}" y2="${dy+5}" stroke="#4B626C"/>
@@ -436,7 +428,7 @@ const rightSVG=svgWrap(renderHalf(RIGHT,jisEnter()+circlePad()),12.25*U,7.0*ROWH
       <text x="${(dx1+dx2)/2}" y="${dy-9}" text-anchor="middle" font-family="ui-monospace,monospace"
         font-size="10" fill="#4B626C">分割面 / 可変</text>`;
   s+=`<text x="0" y="${7.6*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">LEFT — 44 keys + 3 encoders</text>`;
-  s+=`<text x="${SH+8.5*U+SPLIT+7.2*U}" y="${7.6*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">RIGHT — 54 keys + pad</text>`;
+  s+=`<text x="${SH+8.5*U+SPLIT+7.2*U}" y="${7.6*ROWH}" font-family="ui-monospace,monospace" font-size="11" fill="#4B626C">RIGHT — 55 keys + pad</text>`;
   document.getElementById('layout').innerHTML=svgWrap(s,w,h,26);
 })();
 document.getElementById('mock-l').innerHTML=leftSVG;

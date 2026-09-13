@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)
+uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.4)
 
 kbplacer が使えない場合の pcbnew 直接配置スクリプト（pcb-spec.md §8 手順2）。
 KiCad の「ツール > スクリプトコンソール」で:
 
     exec(open("/path/to/place-left.py").read())
 
-座標は pcb-spec.md rev 1.3 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
+座標は pcb-spec.md rev 1.4 準拠。原点はキー領域の左上（u座標 0,0）、Y は下方向が正。
 ORIGIN_X_MM / ORIGIN_Y_MM で、その原点を基板シート上のどこへ置くかを決める。
 
 生成元: tools/gen-layout.py（split-jis75-tb.html + pcb-spec.md から生成。手で編集しない）
@@ -165,7 +165,7 @@ def main():
     missing += place(board, ENCODERS)
     missing += place(board, ENCODER_DIODES, FLIP_DIODES_TO_BACK)
     pcbnew.Refresh()
-    print("uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.3)")
+    print("uskn75-kb 左半体 フットプリント配置 (pcb-spec rev 1.4)")
     print("  配置: SW %d / D %d / ENC %d / ENC用D %d" % (len(SWITCHES), len(DIODES), len(ENCODERS), len(ENCODER_DIODES)))
     if missing:
         print("  !! 見つからないフットプリント: " + ", ".join(missing))
